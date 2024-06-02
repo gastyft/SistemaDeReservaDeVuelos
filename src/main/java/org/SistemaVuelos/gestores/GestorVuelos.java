@@ -3,6 +3,8 @@ package org.SistemaVuelos.gestores;
 import org.SistemaVuelos.enums.Destinos;
 import org.SistemaVuelos.enums.Estado;
 import org.SistemaVuelos.enums.TipoDeVuelo;
+import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
+import org.SistemaVuelos.menus.MenuVuelos;
 import org.SistemaVuelos.model.Vuelo;
 
 import java.time.DateTimeException;
@@ -13,7 +15,7 @@ import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
-public class GestorVuelos {
+public class GestorVuelos { //GESTOR DE CARGA DE DATOS
     GestorCRUD<Vuelo> gestorCRUD = new GestorCRUD<Vuelo>();
     Scanner scanner = new Scanner(System.in);
 
@@ -139,24 +141,25 @@ public class GestorVuelos {
         }
     }
 
-    public void buscarPorDestinos() { //Busca por destino
+    public void buscarPorDestinos() throws  VueloNoEncontradoException{ //Busca por destino
         boolean encontrado = false;
         System.out.println("Ingrese destino a buscar");
-        String destinoABuscar = scanner.nextLine();
+        String destinoABuscar = scanner.nextLine(); //No uso upperCase porque uso equalsIgnoreCase
         //Todo llamo Map.entry y creo dos variables vuelo y destino para no perder la generacidad en GestorCRUD
         for (Map.Entry<String, Vuelo> entry : gestorCRUD.getTreeMap().entrySet()) {
-            Destinos destino = entry.getValue().getDestino(); // entry.getValue() es el objeto Vuelo
+            // entry.getValue() es el objeto Vuelo leido del treeMap
+            Destinos destino = entry.getValue().getDestino();
             if (destino != null && destino.getNombre().equalsIgnoreCase(destinoABuscar)) {
                 System.out.println(entry.getValue());
                 encontrado = true;
             }
         }
         if (!encontrado) {
-            System.out.println("No se encontraron vuelos para el destino: " + destinoABuscar);
+           throw  new VueloNoEncontradoException("No se encontraron vuelos para el destino: " + destinoABuscar);
         }
     }
 
-    public Vuelo buscarUnVuelo() { //busca y devuelve un vuelo
+    public Vuelo buscarUnVuelo() throws VueloNoEncontradoException { //busca y devuelve un vuelo
         Vuelo vuelo = null;
         System.out.println("Ingrese Id del vuelo");
         String numVuelo=scanner.nextLine();
@@ -166,7 +169,7 @@ public class GestorVuelos {
                 System.out.println("Vuelo encontrado");
                 System.out.println(vuelo); // Imprimir detalles del vuelo
             } else {
-                System.out.println("No se encontró ningún vuelo con el número: " + numVuelo);
+               throw new VueloNoEncontradoException("No se encontró ningún vuelo con el número: " + numVuelo);
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
@@ -176,12 +179,12 @@ public class GestorVuelos {
         return vuelo;
     }
 
-    public void eliminar() {
+    public void eliminar() throws VueloNoEncontradoException {
         mostrarVuelos();
         Vuelo vueloAEliminar = buscarUnVuelo(); // Vuelo vueloAEliminar = gestorCRUD.getTreeMap().get(numVuelo);
         if (vueloAEliminar != null) {
             gestorCRUD.eliminar(vueloAEliminar, vueloAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
-        } else System.out.println("No se pudo eliminar el objeto");
+        } else throw new VueloNoEncontradoException("No se pudo eliminar el Vuelo");
     }
 
     public Estado cambiarEstado() {
@@ -209,7 +212,7 @@ public class GestorVuelos {
         return estado;
     }
 
-    public void modificar() { //Modificar
+    public void modificar() throws VueloNoEncontradoException{ //Modificar
         //Reutilizo funciones de agregar
         try {
 
@@ -222,7 +225,7 @@ public class GestorVuelos {
             gestorCRUD.modificar(vuelo.getId(), vuelo);
 
         } catch (Exception e) {
-            throw e;
+            throw new VueloNoEncontradoException("No se pudo modificar el vuelo");
         }
     }
 

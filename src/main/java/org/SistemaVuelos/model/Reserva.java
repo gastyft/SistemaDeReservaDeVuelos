@@ -5,31 +5,31 @@ import org.SistemaVuelos.enums.TipoAsiento;
 import java.util.Objects;
 
 public class Reserva {
-
-
     private final String id;
     private static int autoId = 8000;
     private Pasajero pasajeroReserva;
     private Vuelo vueloReserva;
     private TipoAsiento tipoAsientoPasajero;
+    private boolean activo;
 
-    public Reserva(String idR, Pasajero pasajeroReserva, Vuelo vueloReserva, TipoAsiento tipoAsientoPasajero,String id) {
-        this.id = idR+autoId++;
+    public Reserva(Pasajero pasajeroReserva, Vuelo vueloReserva, TipoAsiento tipoAsientoPasajero) {
+        this.id = "RR"+autoId++;
         this.pasajeroReserva = pasajeroReserva;
         this.vueloReserva = vueloReserva;
         this.tipoAsientoPasajero = tipoAsientoPasajero;
+        this.activo =true;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public String getId() {
         return id;
-    }
-
-    public static int getAutoId() {
-        return autoId;
-    }
-
-    public static void setAutoId(int autoId) {
-        Reserva.autoId = autoId;
     }
 
     public Pasajero getPasajeroReserva() {
@@ -76,4 +76,6 @@ public class Reserva {
                 "\n Vuelo de la Reserva: " + vueloReserva +
                 "\n Tipo de asiento del Pasajero: " + tipoAsientoPasajero;
     }
+
+
 }

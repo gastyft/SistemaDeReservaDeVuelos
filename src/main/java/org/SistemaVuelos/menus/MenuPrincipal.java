@@ -1,5 +1,7 @@
 package org.SistemaVuelos.menus;
 
+import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,41 +13,41 @@ import java.util.Scanner;
 
 public class MenuPrincipal {
 
-        public void iniciar(){
-            Scanner scanner = new Scanner(System.in);
-            //Inicializacion de menus
-            MenuVuelos menuVuelos  = new MenuVuelos();
-            MenuPasajeros menuPasajeros = new MenuPasajeros();
-            MenuReservas menuReservas = new MenuReservas();
+        public void iniciar()  {
 
-            System.out.println("BIENVENIDO");
-            String menu= """
-                    ---------------------MENU PRINCIPAL-------------------
-                    1-Gestion de Vuelos
-                    2-Gestion de Pasajeros
-                    3-Gestion de Reservas
-                    4-Contactar al desarrollador
-                    ESCRIBA "ESC" PARA SALIR DEL PROGRAMA
-                    """;
+              Scanner scanner = new Scanner(System.in);
+              //Inicializacion de menus
+              MenuVuelos menuVuelos = new MenuVuelos();
+              MenuPasajeros menuPasajeros = new MenuPasajeros();
+              MenuReservas menuReservas = new MenuReservas();
 
-            String opc="Esc";
-            do{
-                System.out.println(menu);
-                opc=scanner.nextLine().toUpperCase();
+              System.out.println("BIENVENIDO");
+              String menu = """
+                      ---------------------MENU PRINCIPAL-------------------
+                      1-Gestion de Vuelos
+                      2-Gestion de Pasajeros
+                      3-Gestion de Reservas
+                      4-Contactar al desarrollador
+                      ESCRIBA "ESC" PARA SALIR DEL PROGRAMA
+                      """;
 
-                switch (opc)
-                {
-                    case "1"-> menuVuelos.menuVuelos();
-                    case "2"-> menuPasajeros.menuPasajeros();
-                    case "3"-> menuReservas.menuReservas();
-                    case "4"-> mostrarInformacionContacto(); //Funcion Extra
-                    case "ESC"-> System.out.println("ESCRIBIO ESCAPE");
-                    default -> System.out.println("Opcion incorrecta. Seleccione nuevamente");
-                }
+              String opc = "Esc";
+              do {
+                  System.out.println(menu);
+                  opc = scanner.nextLine().toUpperCase();
 
-            }while(!opc.equalsIgnoreCase("Esc"));
+                  switch (opc) {
+                      case "1" -> menuVuelos.menuVuelos();
+                      case "2" -> menuPasajeros.menuPasajeros();
+                      case "3" -> menuReservas.menuReservas();
+                      case "4" -> mostrarInformacionContacto(); //Funcion Extra
+                      case "ESC" -> System.out.println("ESCRIBIO ESCAPE");
+                      default -> System.out.println("Opcion incorrecta. Seleccione nuevamente");
+                  }
 
-            System.out.println("Salio del sistema. Gracias");
+              } while (!opc.equalsIgnoreCase("Esc"));
+
+              System.out.println("Salio del sistema. Gracias");
 
         }
     private void mostrarInformacionContacto() {

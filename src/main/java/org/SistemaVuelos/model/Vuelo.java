@@ -14,13 +14,39 @@ public class Vuelo {
     private LocalDateTime horarioSalida;
     private Estado estadoDeVuelo;
     private TipoDeVuelo tipoVuelo;
-
+    private int cantAsientosE= 60;
+    private int cantAsientosNeg = 30;
+    private int cantAsientosPri= 20;
     public Vuelo(Destinos destino, LocalDateTime horarioSalida, Estado estadoDeVuelo, TipoDeVuelo tipoVuelo, String id) {
         this.destino = destino;
         this.horarioSalida = horarioSalida;
         this.estadoDeVuelo = estadoDeVuelo;
         this.tipoVuelo = tipoVuelo;
         this.id = id+autoId++; //PASA SEGUN TIPO DE VUELO SU DENOMINACION MAS UN AUTOINCREMENTAL CUALQUIERA
+    }
+
+    public int getCantAsientosE() {
+        return cantAsientosE;
+    }
+
+    public void setCantAsientosE(int cantAsientosE) {
+        this.cantAsientosE = cantAsientosE;
+    }
+
+    public int getCantAsientosNeg() {
+        return cantAsientosNeg;
+    }
+
+    public void setCantAsientosNeg(int cantAsientosNeg) {
+        this.cantAsientosNeg = cantAsientosNeg;
+    }
+
+    public int getCantAsientosPri() {
+        return cantAsientosPri;
+    }
+
+    public void setCantAsientosPri(int cantAsientosPri) {
+        this.cantAsientosPri = cantAsientosPri;
     }
 
     public String getId() {

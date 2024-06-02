@@ -5,15 +5,14 @@ import java.util.Objects;
 public class Pasajero {
 
     private  final String id;
-    private  static int autoId=4500000;
+    private  static int autoId=150000;
 
     private String nombreCompleto;
 
     public Pasajero(String nombreCompleto) {
-        this.id ="PP"+autoId++;
+        this.id ="PAO"+autoId++;  //PASAPORTE ARGENTINO ORIGINAL por tres (3) letras y seis (6) números.
         this.nombreCompleto = nombreCompleto;
     }
-
     public String getId() {
         return id;
     }

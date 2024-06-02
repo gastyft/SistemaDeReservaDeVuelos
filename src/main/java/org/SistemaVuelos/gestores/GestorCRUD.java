@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class GestorCRUD<T> implements CRUD<T> {
+    //Gestor de funcionalidad principal sin carga de datos por usuario
 
     Map<String, T> treeMap;
 
