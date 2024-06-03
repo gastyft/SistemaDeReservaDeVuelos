@@ -8,6 +8,7 @@ import org.SistemaVuelos.gestores.GestorPasajeros;
 import org.SistemaVuelos.gestores.GestorReservas;
 import org.SistemaVuelos.gestores.GestorVuelos;
 import org.SistemaVuelos.model.Reserva;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -84,31 +85,29 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                         System.out.println(" ");
                     }
                 }
-             /*   case "7" -> {
+                case "7" -> {
                     try {
-
-
-                    } catch () {
-
+                        gestorReservas.eliminar();
+                    } catch (ReservaNoEncontradaException e) {
+                        System.out.println("Reserva no encontrada. No se pudo eliminar");
                     }
-
-                } */
+                }
                 case "8" -> {
                     try {
-                        Reserva reserva= gestorReservas.buscarUnaReservaPorID();
-                        if(reserva ==null) throw new ReservaNoEncontradaException(" ");
-            gestorReservas.cancelarReserva(reserva);
+                        Reserva reserva = gestorReservas.buscarUnaReservaPorID();
+                        if (reserva == null) throw new ReservaNoEncontradaException(" ");
+                        gestorReservas.cancelarReserva(reserva);
 
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println(" ");
                     }
 
                 }
-         case "9" -> {
+                case "9" -> {
                     try {
-                    gestorReservas.darDeAltaReservaCancelada();
+                        gestorReservas.darDeAltaReservaCancelada();
 
-                    } catch (ReservaNoEncontradaException |AsientoNoDisponibleException e) {
+                    } catch (ReservaNoEncontradaException | AsientoNoDisponibleException e) {
                         System.out.println(" ");
                     }
 

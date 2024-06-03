@@ -313,4 +313,19 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             return null; // No hay más tipos de asientos disponibles
         }
     }
+
+    public void eliminar()throws ReservaNoEncontradaException {
+        mostrarReservas();
+        Reserva reservaAEliminar = buscarUnaReservaPorID();
+        if (reservaAEliminar != null) {
+            gestorCRUD.eliminar(reservaAEliminar, reservaAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
+        } else throw  new ReservaNoEncontradaException("No se pudo eliminar la reserva");
+    }
+
+
+
+    }
+
+
+
 }
