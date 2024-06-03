@@ -11,8 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
-public class MenuPrincipal {
-
+public class MenuPrincipal { //todo Llamadas a los sub menus
         public void iniciar()  {
 
               Scanner scanner = new Scanner(System.in);
@@ -39,7 +38,7 @@ public class MenuPrincipal {
                   switch (opc) {
                       case "1" -> menuVuelos.menuVuelos();
                       case "2" -> menuPasajeros.menuPasajeros();
-                      case "3" -> menuReservas.menuReservas();
+                      case "3" -> menuReservas.menuReservas(menuPasajeros.gestorPasajeros, menuVuelos.gestorVuelos);
                       case "4" -> mostrarInformacionContacto(); //Funcion Extra
                       case "ESC" -> System.out.println("ESCRIBIO ESCAPE");
                       default -> System.out.println("Opcion incorrecta. Seleccione nuevamente");

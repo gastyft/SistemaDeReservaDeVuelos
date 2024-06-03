@@ -17,12 +17,15 @@ public class Vuelo {
     private int cantAsientosE= 60;
     private int cantAsientosNeg = 30;
     private int cantAsientosPri= 20;
+    private boolean disponible;
+
     public Vuelo(Destinos destino, LocalDateTime horarioSalida, Estado estadoDeVuelo, TipoDeVuelo tipoVuelo, String id) {
         this.destino = destino;
         this.horarioSalida = horarioSalida;
         this.estadoDeVuelo = estadoDeVuelo;
         this.tipoVuelo = tipoVuelo;
         this.id = id+autoId++; //PASA SEGUN TIPO DE VUELO SU DENOMINACION MAS UN AUTOINCREMENTAL CUALQUIERA
+    this.disponible=true;
     }
 
     public int getCantAsientosE() {
@@ -85,6 +88,14 @@ public class Vuelo {
         this.tipoVuelo = tipoVuelo;
     }
 
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,6 +115,15 @@ public class Vuelo {
                 "\nDestino: " + destino.getNombre() +
                 "\nHorario de salida: " + horarioSalida +
                 "\nEstado de vuelo: " + estadoDeVuelo +
-                "\nTipo de vuelo: " + tipoVuelo;
+                "\nTipo de vuelo: " + tipoVuelo+
+                "\nCantidad asientos Economica disponibles "+cantAsientosE+
+                "\nCantidad asientos Negocios disponibles "+cantAsientosNeg+
+                "\nCantidad asientos Primera disponibles "+cantAsientosPri;
+    }
+
+    public void disponibilidad(){
+        if(cantAsientosE==0 && cantAsientosNeg==0 && cantAsientosPri==0)
+            this.disponible= false;
+
     }
 }

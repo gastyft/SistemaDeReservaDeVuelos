@@ -7,15 +7,16 @@ import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
 import org.SistemaVuelos.menus.MenuVuelos;
 import org.SistemaVuelos.model.Vuelo;
 
+import javax.swing.*;
+import java.awt.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import java.util.InputMismatchException;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
-public class GestorVuelos { //GESTOR DE CARGA DE DATOS
+public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
     GestorCRUD<Vuelo> gestorCRUD = new GestorCRUD<Vuelo>();
     Scanner scanner = new Scanner(System.in);
 
@@ -35,6 +36,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         int anio = 0;
         int mes = 0;
         int dia = 0;
+
         boolean fechaValida = false;
         while (!fechaValida) {
             try {
@@ -49,6 +51,8 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
                 mes = scanner.nextInt();
                 System.out.println("Ingrese día");
                 dia = scanner.nextInt();
+
+                scanner.nextLine(); //LIMPIO BUFFER porque tuve errores con el scanner luego de cargar un int. Asi se me soluciona
                 // Validar la fecha ingresada
                 horarioSalida = LocalDateTime.of(anio, mes, dia, hora, min);
 
@@ -89,10 +93,10 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         listaDestinos();
         boolean cargo = false;
         Destinos destino = null;
+        // Scanner scanner1 = new Scanner( System.in);
         while (!cargo) {
             System.out.println("Ingrese el nombre del destino de la lista: ");
-            Scanner scanner = new Scanner(System.in);
-            String nombreDestino = scanner.nextLine().toUpperCase();
+            String nombreDestino = scanner.nextLine().trim().toUpperCase();
             // Buscar el destino correspondiente al nombre ingresado
             for (Destinos d : Destinos.values()) {
                 if (d.getNombre().equalsIgnoreCase(nombreDestino)) {
@@ -110,7 +114,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         return destino;
     }
 
-    public void agregarVuelo() {//TODO FUNCION AGREGAR CON SUBFUNCIONES PARA DESCOMPRIMIR Y QUE NO QUEDE UN METODO MUY EXTENSO
+    public void agregarVuelo() throws VueloNoEncontradoException {//TODO FUNCION AGREGAR CON SUBFUNCIONES PARA DESCOMPRIMIR Y QUE NO QUEDE UN METODO MUY EXTENSO
         String tipoID = "D";
         try {
             Destinos destino = cargaDestino();
@@ -127,7 +131,8 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
                 }
                 Vuelo vuelo = new Vuelo(destino, cargaHorarioSalida(), Estado.PROGRAMADO, destino.getTipo(), tipoID);
                 gestorCRUD.agregar(vuelo, vuelo.getId()); //Agrego en gestor generico
-            } else System.out.println("ERROR carga vuelo");
+                System.out.println("Vuelo creado con exito");
+            } else throw new VueloNoEncontradoException("ERROR al agregar un nuevo vuelo");
         } catch (Exception e) {
             System.out.println("Error en agregar el vuelo: " + e.getMessage());
         }
@@ -141,35 +146,49 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public void buscarPorDestinos() throws  VueloNoEncontradoException{ //Busca por destino
+    public List<Vuelo> buscarPorDestinos() throws VueloNoEncontradoException { //Busca por destino
         boolean encontrado = false;
+        List<Vuelo> vueloList = new ArrayList<>();
         System.out.println("Ingrese destino a buscar");
+        // Scanner scanner1 =new Scanner(System.in);
         String destinoABuscar = scanner.nextLine(); //No uso upperCase porque uso equalsIgnoreCase
         //Todo llamo Map.entry y creo dos variables vuelo y destino para no perder la generacidad en GestorCRUD
         for (Map.Entry<String, Vuelo> entry : gestorCRUD.getTreeMap().entrySet()) {
             // entry.getValue() es el objeto Vuelo leido del treeMap
             Destinos destino = entry.getValue().getDestino();
+
             if (destino != null && destino.getNombre().equalsIgnoreCase(destinoABuscar)) {
+                vueloList.add(entry.getValue());
                 System.out.println(entry.getValue());
                 encontrado = true;
+
             }
         }
         if (!encontrado) {
-           throw  new VueloNoEncontradoException("No se encontraron vuelos para el destino: " + destinoABuscar);
+            throw new VueloNoEncontradoException("No se encontraron vuelos para el destino: " + destinoABuscar);
         }
+        return vueloList;
     }
 
     public Vuelo buscarUnVuelo() throws VueloNoEncontradoException { //busca y devuelve un vuelo
-        Vuelo vuelo = null;
+        Vuelo vuelo = null; //TODO VER PORQUE NO ANDA BUSCAR
         System.out.println("Ingrese Id del vuelo");
-        String numVuelo=scanner.nextLine();
+        // Scanner scanner1 =new Scanner(System.in);
+        // TODO SOLUCION COLOCAR UN scanner.nextLine() debajo de la ultima carga de un scanner.nextInt()
+        // scanner.nextLine(); //Tuve que crear un nuevo scanner localmente porque no funcionaba
+        //me capturaba un dato vacio y saltaba a la exeption
+        //Una suposicion mia es que como en agregarVuelo llamo al scanner instanciado de manera global
+        // repetidas veces entonces me debe quedar "tildado" o "sin limpiar"
+        //porque en el Gestor Pasajeros realizo la misma logica y funciona perfectamente para busqueda
+        String num = scanner.nextLine().trim().toUpperCase();
         try {
-            vuelo = gestorCRUD.getTreeMap().get(numVuelo);
+            vuelo = gestorCRUD.getTreeMap().get(num);
             if (vuelo != null) {
                 System.out.println("Vuelo encontrado");
                 System.out.println(vuelo); // Imprimir detalles del vuelo
-            } else {
-               throw new VueloNoEncontradoException("No se encontró ningún vuelo con el número: " + numVuelo);
+
+            } else { //tira una nueva excepcion en el momento si no se encontro el vuelo
+                throw new VueloNoEncontradoException("No se encontró ningún vuelo con el número: " + num);
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
@@ -179,7 +198,9 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         return vuelo;
     }
 
-    public void eliminar() throws VueloNoEncontradoException {
+
+    public void eliminar() throws VueloNoEncontradoException { //elimina un vuelo
+        // TODO PREGUNTAR por si hay reservas activas o no puedo eliminar
         mostrarVuelos();
         Vuelo vueloAEliminar = buscarUnVuelo(); // Vuelo vueloAEliminar = gestorCRUD.getTreeMap().get(numVuelo);
         if (vueloAEliminar != null) {
@@ -190,12 +211,16 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
     public Estado cambiarEstado() {
         boolean cargo = false;
         Estado estado = null;
-
+        // Scanner scanner3 =new Scanner(System.in);
         while (!cargo) {
-            String nuevoEstado=scanner.nextLine();
-            nuevoEstado.toUpperCase();
-            // Buscar el destino correspondiente al nombre ingresado
 
+
+            // Buscar el destino correspondiente al nombre ingresado
+            for (Estado estMuestra : Estado.values()) {
+                System.out.println(estMuestra);
+            }
+            System.out.println("Ingrese nuevo estado");
+            String nuevoEstado = scanner.nextLine().trim().toUpperCase();
             for (Estado est : Estado.values()) {
                 if (est.name().equals(nuevoEstado)) {
                     estado = est;
@@ -212,24 +237,60 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS
         return estado;
     }
 
-    public void modificar() throws VueloNoEncontradoException{ //Modificar
+    public Vuelo modificar() throws VueloNoEncontradoException { //Modificar
         //Reutilizo funciones de agregar
         try {
-
+            System.out.println("Modificar un vuelo");
             Vuelo vuelo = buscarUnVuelo();
+            System.out.println("Carga de destino nuevo");
             Destinos destino = cargaDestino();
             vuelo.setDestino(destino);
             vuelo.setTipoVuelo(destino.getTipo());
+            System.out.println("Cambiar estado");
             vuelo.setEstadoDeVuelo(cambiarEstado());
+            System.out.println("Cargar horario salida");
             vuelo.setHorarioSalida(cargaHorarioSalida());
             gestorCRUD.modificar(vuelo.getId(), vuelo);
-
+            return vuelo;
         } catch (Exception e) {
             throw new VueloNoEncontradoException("No se pudo modificar el vuelo");
         }
     }
 
+    public void imprimirPantallaDetallesVuelo(Vuelo vuelo) { //Imprime con Swing una actualizacion sobre un vuelo
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Detalles del Vuelo");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(500, 300);
 
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 1)); // Una columna y filas automáticas
 
+            JLabel label1 = new JLabel("ACTUALIZACION");
+            label1.setBackground(Color.RED); // Cambia el color de fondo a rojo
+            label1.setOpaque(true); // Esto es necesario para que el color de fondo sea visible
+            panel.add(label1);
+
+            JLabel label = new JLabel("Detalles del Vuelo:");
+            label.setFont(new Font("Arial", Font.BOLD, 18));
+            panel.add(label);
+
+            panel.add(new JLabel("ID: " + vuelo.getId()));
+            panel.add(new JLabel("Destino: " + vuelo.getDestino()));
+            panel.add(new JLabel("Horario de salida: " + vuelo.getHorarioSalida()));
+            panel.add(new JLabel("Estado de vuelo: " + vuelo.getEstadoDeVuelo()));
+            panel.add(new JLabel("Tipo de vuelo: " + vuelo.getTipoVuelo()));
+            //         panel.add(new JLabel("Asientos Económicos disponibles: " + vuelo.getAsientosEconomicos()));
+            //      panel.add(new JLabel("Asientos de Negocios disponibles: " + vuelo.getAsientosNegocios()));
+            //   panel.add(new JLabel("Asientos de Primera disponibles: " + vuelo.getAsientosPrimera()));
+
+            frame.add(panel);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
 
 }
+
+
+

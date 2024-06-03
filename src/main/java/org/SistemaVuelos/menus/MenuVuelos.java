@@ -1,9 +1,12 @@
 package org.SistemaVuelos.menus;
 
 
+import org.SistemaVuelos.enums.Estado;
 import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
 import org.SistemaVuelos.gestores.GestorVuelos;
+import org.SistemaVuelos.model.Vuelo;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuVuelos { //Todo llamadas a las funciones de carga
@@ -22,6 +25,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
             4-Buscar por ID
             5-Modificar
             6-Eliminar por ID
+            7-Cambiar estado a un vuelo
             ESCRIBA "ESC" PARA VOLVER AL MENU PRINCIPAL
             """;
     String opc = "Esc";
@@ -30,26 +34,34 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
         System.out.println(menu);
         opc = scanner.nextLine().toUpperCase();
         switch (opc) {
-            case "1" -> gestorVuelos.agregarVuelo();
+            case "1" ->
+            {try {
+                gestorVuelos.agregarVuelo();
+            }catch (VueloNoEncontradoException e){
+                System.out.println(e.getMessage());
+            }
+            }
             case "2" -> gestorVuelos.mostrarVuelos();
             case "3" -> {
                 gestorVuelos.listaDestinos();
                 try {
-                    gestorVuelos.buscarPorDestinos();
+                    List<Vuelo> vueloList =gestorVuelos.buscarPorDestinos();
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
             }
             case "4" -> {
+                gestorVuelos.mostrarVuelos();
                 try {
-                    gestorVuelos.buscarUnVuelo();
+                    Vuelo vuelo= gestorVuelos.buscarUnVuelo();
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
             }
             case "5" -> {
                 try {
-                    gestorVuelos.modificar();
+                   Vuelo vuelo =  gestorVuelos.modificar();
+                    gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
                 }catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
@@ -60,6 +72,18 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
+            }
+            case "7"->{
+              try{
+                  Vuelo vuelo = gestorVuelos.buscarUnVuelo();
+               Estado estado = gestorVuelos.cambiarEstado();
+               gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
+               if(vuelo != null && estado!= null){
+                   vuelo.setEstadoDeVuelo(estado);
+               }
+              }catch (VueloNoEncontradoException e){
+                  System.out.println(e.getMessage());
+              }
             }
             case "ESC" -> System.out.println("ESCRIBIO ESC");
             default -> System.out.println("Opcion incorrecta. Elija nuevamente");

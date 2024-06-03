@@ -5,11 +5,11 @@ public enum Destinos {
     MAR_DEL_PLATA("Mar del Plata", TipoDeVuelo.NACIONAL),
     BUENOS_AIRES("Buenos Aires", TipoDeVuelo.NACIONAL),
     MENDOZA("Mendoza", TipoDeVuelo.NACIONAL),
-    PARIS("París", TipoDeVuelo.INTERNACIONAL),
+    PARIS("Paris", TipoDeVuelo.INTERNACIONAL),
     LONDON("Londres", TipoDeVuelo.INTERNACIONAL),
     NEW_YORK("Nueva York", TipoDeVuelo.INTERNACIONAL),
     TOKYO("Tokio", TipoDeVuelo.INTERNACIONAL),
-    SYDNEY("Sídney", TipoDeVuelo.INTERNACIONAL);
+    SYDNEY("Sydney", TipoDeVuelo.INTERNACIONAL);
 
     private final String nombre;
     private final TipoDeVuelo tipo;

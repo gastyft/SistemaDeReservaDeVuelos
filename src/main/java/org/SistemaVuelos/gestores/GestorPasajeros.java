@@ -23,14 +23,14 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
     Scanner scanner = new Scanner(System.in);
     GestorCRUD<Pasajero> gestorCRUD = new GestorCRUD<Pasajero>();
 
-    public void agregarPasajero() {
+    public void agregarPasajero() throws PasajeroNoEncontradoException{
 
         try {
             System.out.println("Ingrese nombre completo");
             Pasajero pasajeroNuevo = new Pasajero(scanner.nextLine());
             gestorCRUD.agregar(pasajeroNuevo, pasajeroNuevo.getId());
         } catch (Exception e) {
-            throw new RuntimeException("ERROR EN CARGAR PASAJERO");
+            throw new PasajeroNoEncontradoException("ERROR EN CARGAR PASAJERO");
         }
     }
 
@@ -52,17 +52,17 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public Pasajero buscarUnPasajeroID() { //busca y devuelve un pasajero
+    public Pasajero buscarUnPasajeroID() throws PasajeroNoEncontradoException { //busca y devuelve un pasajero
         Pasajero pasajero = null;
         System.out.println("Ingrese Id del pasajero");
-        String pasaporte = scanner.nextLine();
+        String pasaporte = scanner.nextLine().toUpperCase();
         try {
             pasajero = gestorCRUD.getTreeMap().get(pasaporte);
             if (pasajero != null) {
                 System.out.println("pasajero encontrado");
                 System.out.println(pasajero); // Imprimir detalles del pasajero
             } else {
-                System.out.println("No se encontró ningún pasajero con el pasaporte: " + pasaporte);
+               throw  new PasajeroNoEncontradoException("No se encontró ningún pasajero con el pasaporte: " + pasaporte);
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
@@ -80,22 +80,22 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public void modificar() {
+    public void modificar()throws PasajeroNoEncontradoException {
         try {
             Pasajero pasajeroAModificar = buscarUnPasajeroID();
             System.out.println("Ingrese nuevo nombre completo");
             pasajeroAModificar.setNombreCompleto(scanner.nextLine());
         } catch (Exception e) {
-            System.out.println("Error al modificar");
+            throw new PasajeroNoEncontradoException("No se pudo modificar.");
         }
     }
 
-    public void eliminar() {
+    public void eliminar() throws PasajeroNoEncontradoException{
         mostrarPasajeros();
         Pasajero pasajeroAEliminar = buscarUnPasajeroID(); //
         if (pasajeroAEliminar != null) {
             gestorCRUD.eliminar(pasajeroAEliminar, pasajeroAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
-        } else System.out.println("No se pudo eliminar el objeto");
+        } else throw  new PasajeroNoEncontradoException("No se pudo eliminar el objeto");
     }
 
 }
