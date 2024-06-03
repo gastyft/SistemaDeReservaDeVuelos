@@ -3,6 +3,7 @@ package org.SistemaVuelos.menus;
 
 import org.SistemaVuelos.enums.Estado;
 import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
+import org.SistemaVuelos.gestores.GestorReservas;
 import org.SistemaVuelos.gestores.GestorVuelos;
 import org.SistemaVuelos.model.Vuelo;
 
@@ -13,13 +14,13 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
 
     GestorVuelos gestorVuelos = new GestorVuelos();
 
-    public void menuVuelos() {
+    public void menuVuelos(GestorReservas gestorReservas) {
 
 
 
     String menu = """
             ---------------------MENU VUELOS-------------------
-            1-Agregar
+            1-Agregar Vuelo
             2-Mostrar Todos
             3-Buscar por destino
             4-Buscar por ID
@@ -60,6 +61,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
             }
             case "5" -> {
                 try {
+                    gestorVuelos.mostrarVuelos();
                    Vuelo vuelo =  gestorVuelos.modificar();
                     gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
                 }catch (VueloNoEncontradoException e) {
@@ -68,7 +70,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
             }
             case "6" -> {
                 try {
-                    gestorVuelos.eliminar();
+                    gestorVuelos.eliminar(gestorReservas);
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
@@ -76,6 +78,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
             case "7"->{
               try{
                   Vuelo vuelo = gestorVuelos.buscarUnVuelo();
+                  if(vuelo ==null) throw new VueloNoEncontradoException("");
                Estado estado = gestorVuelos.cambiarEstado();
                gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
                if(vuelo != null && estado!= null){

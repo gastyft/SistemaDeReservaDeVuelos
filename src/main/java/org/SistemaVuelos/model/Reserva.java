@@ -73,8 +73,9 @@ public class Reserva {
         return "\n----------------------------------\n" +
                 "\nId: " + id +
                 "\nPasajero de la reserva: " + pasajeroReserva +
-                "\n Vuelo de la Reserva: " + vueloReserva +
-                "\n Tipo de asiento del Pasajero: " + tipoAsientoPasajero;
+                "\nVuelo de la Reserva: " + vueloReserva +
+                "\nTipo de asiento del Pasajero: " + tipoAsientoPasajero+
+                "\nLa reserva esta "+(activo ? "Activa" : "Dada de baja");
     }
 
 

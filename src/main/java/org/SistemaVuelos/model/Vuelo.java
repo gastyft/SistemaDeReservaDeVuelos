@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Vuelo {
-    private final String id;
+    private  String id;
     private  static int autoId=3000;
     private Destinos destino;
     private LocalDateTime horarioSalida;
     private Estado estadoDeVuelo;
     private TipoDeVuelo tipoVuelo;
+    private String caracterParaId;
     private int cantAsientosE= 60;
     private int cantAsientosNeg = 30;
     private int cantAsientosPri= 20;
@@ -24,8 +25,21 @@ public class Vuelo {
         this.horarioSalida = horarioSalida;
         this.estadoDeVuelo = estadoDeVuelo;
         this.tipoVuelo = tipoVuelo;
-        this.id = id+autoId++; //PASA SEGUN TIPO DE VUELO SU DENOMINACION MAS UN AUTOINCREMENTAL CUALQUIERA
+        this.caracterParaId=id;
+        this.id = caracterParaId+autoId++; //PASA SEGUN TIPO DE VUELO SU DENOMINACION MAS UN AUTOINCREMENTAL CUALQUIERA
     this.disponible=true;
+    }
+
+    public String getCaracterParaId() {
+        return caracterParaId;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCaracterParaId(String caracterParaId) {
+        this.caracterParaId = caracterParaId;
     }
 
     public int getCantAsientosE() {

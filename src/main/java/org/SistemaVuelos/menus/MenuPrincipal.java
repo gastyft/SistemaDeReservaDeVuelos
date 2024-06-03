@@ -18,7 +18,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
               //Inicializacion de menus
               MenuVuelos menuVuelos = new MenuVuelos();
               MenuPasajeros menuPasajeros = new MenuPasajeros();
-              MenuReservas menuReservas = new MenuReservas();
+              MenuReservas menuReservas = new MenuReservas(menuPasajeros.gestorPasajeros, menuVuelos.gestorVuelos);
 
               System.out.println("BIENVENIDO");
               String menu = """
@@ -36,9 +36,9 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
                   opc = scanner.nextLine().toUpperCase();
 
                   switch (opc) {
-                      case "1" -> menuVuelos.menuVuelos();
+                      case "1" -> menuVuelos.menuVuelos(menuReservas.gestorReservas);
                       case "2" -> menuPasajeros.menuPasajeros();
-                      case "3" -> menuReservas.menuReservas(menuPasajeros.gestorPasajeros, menuVuelos.gestorVuelos);
+                      case "3" -> menuReservas.menuReservas();
                       case "4" -> mostrarInformacionContacto(); //Funcion Extra
                       case "ESC" -> System.out.println("ESCRIBIO ESCAPE");
                       default -> System.out.println("Opcion incorrecta. Seleccione nuevamente");

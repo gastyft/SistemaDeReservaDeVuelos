@@ -29,6 +29,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             System.out.println("Ingrese nombre completo");
             Pasajero pasajeroNuevo = new Pasajero(scanner.nextLine());
             gestorCRUD.agregar(pasajeroNuevo, pasajeroNuevo.getId());
+            System.out.println("Pasajero agregado con exito");
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("ERROR EN CARGAR PASAJERO");
         }
@@ -83,6 +84,8 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
     public void modificar()throws PasajeroNoEncontradoException {
         try {
             Pasajero pasajeroAModificar = buscarUnPasajeroID();
+            if(pasajeroAModificar==null)
+                throw new PasajeroNoEncontradoException("No se encontro el pasajero");
             System.out.println("Ingrese nuevo nombre completo");
             pasajeroAModificar.setNombreCompleto(scanner.nextLine());
         } catch (Exception e) {

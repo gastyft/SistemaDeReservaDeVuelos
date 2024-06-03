@@ -41,6 +41,6 @@ public class Pasajero {
     public String toString() {
         return "\n----------------------------------------\n" +
                 "\nId: " + id +
-                "\nNombre completo='" + nombreCompleto;
+                "\nNombre completo: " + nombreCompleto;
     }
 }

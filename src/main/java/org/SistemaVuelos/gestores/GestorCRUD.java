@@ -38,7 +38,17 @@ public class GestorCRUD<T> implements CRUD<T> {
             treeMap.put(idModificar, obj);
         } else System.out.println("Error al modificar");
     }
-
+    public void modificarId(String idAntiguo, String nuevoId) { //Solo lo uso en Vuelo Si se modifica el destino de
+        //nacional a internacional o viceversa.
+        if (treeMap.containsKey(idAntiguo)) {
+            // Extraer el objeto del TreeMap con el ID antiguo
+            T objetoModificado = treeMap.remove(idAntiguo);
+            // Insertar el objeto con el nuevo ID en el TreeMap
+            treeMap.put(nuevoId, objetoModificado);
+        } else {
+            System.out.println("No se encontró ningún objeto con el ID " + idAntiguo);
+        }
+    }
 
     @Override
     public void eliminar(T obj, String idAEliminar) {
