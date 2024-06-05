@@ -97,6 +97,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 }
                 case "8" -> {
                     try { // Busca una reserva por Id y cancela la reserva
+                        gestorReservas.mostrarReservas();
                         Reserva reserva = gestorReservas.buscarUnaReservaPorID();
                         if (reserva == null) throw new ReservaNoEncontradaException(" ");
                         gestorReservas.cancelarReserva(reserva);

@@ -220,8 +220,8 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             return vueloAEliminar;
         } else {
             if (vueloAEliminar == null)
-                throw new VueloNoEncontradoException("No se pudo eliminar el Vuelo");
-            else throw new VueloNoEncontradoException("Tiene reservas asociada a este vuelo");
+                throw new VueloNoEncontradoException("\nNo se pudo eliminar el Vuelo");
+            else throw new VueloNoEncontradoException("\n TIENE RESERVAS ASOCIADAS EL VUELO NO SE PUEDE ELIMINAR");
         }
     }
 

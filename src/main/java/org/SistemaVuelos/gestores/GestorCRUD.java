@@ -1,6 +1,9 @@
 package org.SistemaVuelos.gestores;
 
 
+import org.SistemaVuelos.model.Pasajero;
+import org.SistemaVuelos.model.Vuelo;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -87,8 +90,15 @@ public class GestorCRUD<T> implements CRUD<T> {
     public void imprimirTreeMapEnSwing(TreeMap<String, T> treeMap1) { //Metodo de muestreo por Swing
 
         SwingUtilities.invokeLater(() -> {
-
-            JFrame frame = new JFrame(treeMap1.getClass().getSimpleName());
+            // Determinar el nombre de la clase del primer valor en el TreeMap
+            String frameTitle = "TreeMap";
+            if (!treeMap1.isEmpty()) {
+                T firstValue = treeMap1.firstEntry().getValue();
+                if (firstValue != null) {
+                    frameTitle = firstValue.getClass().getSimpleName();
+                }
+            }
+            JFrame frame = new JFrame("LISTA DE "+frameTitle.toUpperCase()+"S");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(600, 400);
 
@@ -116,16 +126,33 @@ public class GestorCRUD<T> implements CRUD<T> {
                     for (Field field : value.getClass().getDeclaredFields()) {
                         field.setAccessible(true);
                         try {
-                            // Omitir autoId
-                            if (!field.getName().equals("autoId")&& !field.getName().equals("caracterParaId")) {
-                                rowData[i++] = field.get(value);
+                            // Omitir autoId y caracterParaId
+                            if (!field.getName().equals("autoId") && !field.getName().equals("caracterParaId")) {
+                                if (field.getName().equals("pasajeroReserva")) {
+                                    // Obtener el campo id del objeto Pasajero
+                                    Pasajero pasajero = (Pasajero) field.get(value);
+                                    if (pasajero != null) {
+                                        Field pasajeroIdField = pasajero.getClass().getDeclaredField("id");
+                                        pasajeroIdField.setAccessible(true);
+                                        rowData[i++] = pasajeroIdField.get(pasajero);
+                                    }
+                                } else if (field.getName().equals("vueloReserva")) {
+                                    // Obtener el campo id del objeto Vuelo
+                                    Vuelo vuelo = (Vuelo) field.get(value);
+                                    if (vuelo != null) {
+                                        Field vueloIdField = vuelo.getClass().getDeclaredField("id");
+                                        vueloIdField.setAccessible(true);
+                                        rowData[i++] = vueloIdField.get(vuelo);
+                                    }
+                                } else {
+                                    rowData[i++] = field.get(value);
+                                }
                             }
-                        } catch (IllegalAccessException e) {
+                        } catch (IllegalAccessException | NoSuchFieldException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-
                 tableModel.addRow(rowData);
             }
 
@@ -148,7 +175,6 @@ public class GestorCRUD<T> implements CRUD<T> {
         });
     }
 }
-
 
 
 

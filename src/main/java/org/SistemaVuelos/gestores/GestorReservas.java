@@ -299,6 +299,8 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                     reserva.getVueloReserva().setCantAsientosPri(reserva.getVueloReserva().getCantAsientosPri() + 1);
                 System.out.println("Reserva cancelada");
                 imprimirCancelarReserva(reserva);//Muestreo de cancelacion por SWING
+                imprimirPantallaDetallesReserva(reserva,"1");
+                System.out.println(reserva);
             }
         } catch (Exception e) {
             System.out.println("No se encontro la reserva");
@@ -313,38 +315,41 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             if (reserva == null) throw new ReservaNoEncontradaException("No se encontro la reserva solicitada");
             //Si hay asientos disponibles se puede asignar uno
             if (reserva.getVueloReserva().isDisponible()) {
-                if (reserva.getTipoAsientoPasajero() != null) {
-                    try { //Se valida que el tipo de asiento reservado cancelado este disponible
-                        tipoAsientoDisponible(reserva.getTipoAsientoPasajero(), reserva.getVueloReserva());
-                    } catch (
-                            AsientoNoDisponibleException e) {//Si no se puede es que ya no hay mas lugares con ese asiento
-                        //Si el asiento estaba lleno entonces dentro del catch se carga un nuevo asiento si es que hay disponibles
-                        System.out.println("El tipo de asiento reservado anteriormente no está disponible. Se asignará otro tipo de asiento si está disponible.");
-                        TipoAsiento nuevoTipoAsiento = seleccionarOtroTipoAsientoDisponible(reserva.getVueloReserva());
-                        //Si hay otro asiento disponible se asigna automaticamente
-                        // Verifica si se encontró otro tipo de asiento disponible
-                        if (nuevoTipoAsiento != null) {
-                            try {
-                                //Se resta la disponibilidad de ese nuevo asiento o si habia
-                                //lugar en el asiento original entonces
-                                tipoAsientoDisponible(nuevoTipoAsiento, reserva.getVueloReserva());
-                                System.out.println("Se ha asignado un nuevo tipo de asiento: " + nuevoTipoAsiento);
-                                reserva.setTipoAsientoPasajero(nuevoTipoAsiento);
-                            } catch (AsientoNoDisponibleException ex) {
+                if (!reserva.isActivo()) { //Si la reserva no se encuentra activa
+                    if (reserva.getTipoAsientoPasajero() != null) {
+                        try { //Se valida que el tipo de asiento reservado cancelado este disponible
+                            tipoAsientoDisponible(reserva.getTipoAsientoPasajero(), reserva.getVueloReserva());
+                        } catch (
+                                AsientoNoDisponibleException e) {//Si no se puede es que ya no hay mas lugares con ese asiento
+                            //Si el asiento estaba lleno entonces dentro del catch se carga un nuevo asiento si es que hay disponibles
+                            System.out.println("El tipo de asiento reservado anteriormente no está disponible. Se asignará otro tipo de asiento si está disponible.");
+                            TipoAsiento nuevoTipoAsiento = seleccionarOtroTipoAsientoDisponible(reserva.getVueloReserva());
+                            //Si hay otro asiento disponible se asigna automaticamente
+                            // Verifica si se encontró otro tipo de asiento disponible
+                            if (nuevoTipoAsiento != null) {
+                                try {
+                                    //Se resta la disponibilidad de ese nuevo asiento o si habia
+                                    //lugar en el asiento original entonces
+                                    tipoAsientoDisponible(nuevoTipoAsiento, reserva.getVueloReserva());
+                                    System.out.println("Se ha asignado un nuevo tipo de asiento: " + nuevoTipoAsiento);
+                                    reserva.setTipoAsientoPasajero(nuevoTipoAsiento);
+                                } catch (AsientoNoDisponibleException ex) {
 
-                                System.out.println("No hay más tipos de asientos disponibles.");
+                                    System.out.println("No hay más tipos de asientos disponibles.");
+                                }
+                            } else { //Si estan todos ocupados de todos los tipos se lanza excepcion
+                                throw new AsientoNoDisponibleException("No hay más tipos de asientos disponibles.");
                             }
-                        } else { //Si estan todos ocupados de todos los tipos se lanza excepcion
-                            throw new AsientoNoDisponibleException("No hay más tipos de asientos disponibles.");
-                        }
-                    } //Si se asigna un asiento y caso de que justo era el ultimo se setea la disponibilidad de asientos a false
-                    if (reserva.getVueloReserva().getCantAsientosE() == 0 && reserva.getVueloReserva().getCantAsientosNeg() == 0 && reserva.getVueloReserva().getCantAsientosPri() == 0)
-                        reserva.getVueloReserva().setDisponible(false);
-                } else {
-                    throw new AsientoNoDisponibleException("Error en tipo de asiento");
-                }
-            } else throw new AsientoNoDisponibleException("No hay asientos disponibles");
-            reserva.setActivo(true); //Si se pudo cargar el asiento bien se setea la reserva a activa nuevamente
+                        } //Si se asigna un asiento y caso de que justo era el ultimo se setea la disponibilidad de asientos a false
+                        if (reserva.getVueloReserva().getCantAsientosE() == 0 && reserva.getVueloReserva().getCantAsientosNeg() == 0 && reserva.getVueloReserva().getCantAsientosPri() == 0)
+                            reserva.getVueloReserva().setDisponible(false);
+                    } else {
+                        throw new AsientoNoDisponibleException("Error en tipo de asiento");
+                    }
+                } else
+                    throw new AsientoNoDisponibleException("No hay asientos disponibles");
+            }else throw new ReservaNoEncontradaException("La reserva ya se encuentra activa");
+                reserva.setActivo(true); //Si se pudo cargar el asiento bien se setea la reserva a activa nuevamente
             imprimirActivarReservaCancelada(reserva);//Se imprime actualizacion con Swing
         } catch (Exception e) {
             System.out.println("Error en dar de alta");
@@ -375,7 +380,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
 
 
     public void imprimirPantallaDetallesReserva(Reserva reserva, String i) {
-        //Muestreo de detalle de reserva con Swing
+        // Muestreo de detalle de reserva con Swing
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Detalles de la Reserva");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -385,10 +390,11 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             panel.setLayout(new GridLayout(0, 1)); // Una columna y filas automáticas
             JLabel label1;
             if (i.equals("1"))
-                label1 = new JLabel("ACTUALIZACION"); //Caso actualizacion de la reserva
+                label1 = new JLabel("ACTUALIZACION"); // Caso actualizacion de la reserva
             else if (i.equals("0"))
-                label1 = new JLabel("RESERVA AGREGADA"); //Caso agregar nueva reserva
-            else label1 = new JLabel("RESERVA ENCONTRADA"); //Caso en busqueda
+                label1 = new JLabel("RESERVA AGREGADA"); // Caso agregar nueva reserva
+            else
+                label1 = new JLabel("RESERVA ENCONTRADA"); // Caso en busqueda
             label1.setBackground(Color.RED); // Cambia el color de fondo a rojo
             label1.setOpaque(true); // Esto es necesario para que el color de fondo sea visible
             panel.add(label1);
@@ -397,21 +403,30 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             label.setFont(new Font("Arial", Font.BOLD, 18));
             panel.add(label);
 
-            panel.add(new JLabel("ID: " + reserva.getId()));
-            panel.add(new JLabel("Pasajero: " + reserva.getPasajeroReserva().getNombreCompleto()));
-            panel.add(new JLabel("Vuelo: " + reserva.getVueloReserva().getId()));
-            panel.add(new JLabel("Destino del vuelo: " + reserva.getVueloReserva().getDestino()));
-            panel.add(new JLabel("Horario de salida: " + reserva.getVueloReserva().getHorarioSalida()));
-            panel.add(new JLabel("Estado del vuelo: " + reserva.getVueloReserva().getEstadoDeVuelo()));
-            panel.add(new JLabel("Tipo de vuelo: " + reserva.getVueloReserva().getTipoVuelo()));
+            // Mostrar nombre del pasajero
+            Pasajero pasajero = reserva.getPasajeroReserva();
+            panel.add(new JLabel("Pasajero: " + pasajero.getNombreCompleto()));
+
+            // Mostrar ID o destino del vuelo
+            Vuelo vuelo = reserva.getVueloReserva();
+            String infoVuelo = "Destino: ";
+            if (vuelo.getTipoVuelo().equals("Nacional")) {
+                infoVuelo += vuelo.getId();
+            } else {
+                infoVuelo += vuelo.getDestino();
+            }
+            panel.add(new JLabel(infoVuelo));
+
+            panel.add(new JLabel("Horario de salida: " + vuelo.getHorarioSalida()));
+            panel.add(new JLabel("Estado del vuelo: " + vuelo.getEstadoDeVuelo()));
+            panel.add(new JLabel("Tipo de vuelo: " + vuelo.getTipoVuelo()));
             panel.add(new JLabel("Tipo de asiento: " + reserva.getTipoAsientoPasajero()));
             panel.add(new JLabel("Estado de la reserva: " + (reserva.isActivo() ? "Activa" : "Dada de baja")));
-                            //Ternario para ver si la reserva esta activa o cancelada
+            // Ternario para ver si la reserva esta activa o cancelada
             frame.add(panel);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
-
     }
 
     public void imprimirEliminarReserva(Reserva reserva) {
