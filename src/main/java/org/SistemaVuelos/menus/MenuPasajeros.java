@@ -12,8 +12,8 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
 
     public void menuPasajeros() {
 
-
-        String menu = """
+    // un string de las opciones del menu
+        String menu = """ 
                 ---------------------MENU PASAJEROS-------------------
                 1-Agregar Pasajero
                 2-Mostrar Todos
@@ -25,19 +25,19 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 """;
         String opc = "Esc";
         Scanner scanner = new Scanner(System.in);
-        do {
-            System.out.println(menu);
+        do { // do while con opc en String
+            System.out.println(menu); //Imprime menu
             opc = scanner.nextLine().toUpperCase();
             switch (opc) {
-                case "1" -> {
+                case "1" -> { //Agregar pasajero
                     try {
                         gestorPasajeros.agregarPasajero();
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println(e.getMessage());
                     }
                 }
-                case "2" -> gestorPasajeros.mostrarPasajeros();
-                case "3" -> {
+                case "2" -> gestorPasajeros.mostrarPasajeros(); //Muestra pasajeros
+                case "3" -> { //muestra y busca pasajeros
                     gestorPasajeros.mostrarPasajeros();
                     try {
                         gestorPasajeros.buscarPorNombre();
@@ -45,7 +45,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                         System.out.println("Pasajero no encontrado");
                     }
                 }
-                case "4" -> {
+                case "4" -> { //Busca un pasajero por id e imprime con Swing
                     try {
                        Pasajero pasajero= gestorPasajeros.buscarUnPasajeroID();
                         gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"B");
@@ -54,7 +54,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                     }
                 }
 
-                case "5" -> {
+                case "5" -> { //Modifica un pasajero e imprime con Swing
                     try {
                     Pasajero pasajero =   gestorPasajeros.modificar();
                         gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"1");
@@ -63,7 +63,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                     }
                 }
 
-                case "6" -> {
+                case "6" -> { //Elimina un pasajero e imprime con Swing
                     try {
                        Pasajero pasajero = gestorPasajeros.eliminar();
                         gestorPasajeros.imprimirEliminarPasajero(pasajero);
@@ -75,7 +75,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 default -> System.out.println("Opcion incorrecta. Elija nuevamente");
             }
 
-        } while (!opc.equalsIgnoreCase("Esc"));
+        } while (!opc.equalsIgnoreCase("Esc")); //Se sale al tipear ESC con equalsIgnoreCase
         System.out.println("Salio de la Gestion de Pasajeros");
     }
 }

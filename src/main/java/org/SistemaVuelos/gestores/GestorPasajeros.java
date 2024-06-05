@@ -1,11 +1,8 @@
 package org.SistemaVuelos.gestores;
 
-import org.SistemaVuelos.enums.Destinos;
-import org.SistemaVuelos.exceptions.PasajeroNoEncontradoException;
-import org.SistemaVuelos.menus.MenuPrincipal;
-import org.SistemaVuelos.model.Pasajero;
-import org.SistemaVuelos.model.Vuelo;
 
+import org.SistemaVuelos.exceptions.PasajeroNoEncontradoException;
+import org.SistemaVuelos.model.Pasajero;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
@@ -16,7 +13,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
 
     /* String pais = "Estados Unidos";  //Si se quiere personalizar pasaportes por paises
      char primeraLetra = pais.charAt(0);
-     public static boolean contieneSoloLetras(String str) {
+     public  boolean contieneSoloLetras(String str) {
          // Expresión regular para verificar si la cadena contiene solo letras
          // La expresión regular ^[a-zA-Z]*$ coincide con una cadena que contiene solo letras (mayúsculas y minúsculas)
          return str.matches("^[a-zA-Z]*$");
@@ -25,29 +22,35 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
     Scanner scanner = new Scanner(System.in);
     GestorCRUD<Pasajero> gestorCRUD = new GestorCRUD<Pasajero>();
 
-    public void agregarPasajero() throws PasajeroNoEncontradoException{
+    public void agregarPasajero() throws PasajeroNoEncontradoException{//Agrega un pasajero
 
         try {
             System.out.println("Ingrese nombre completo");
-            Pasajero pasajeroNuevo = new Pasajero(scanner.nextLine());
-            gestorCRUD.agregar(pasajeroNuevo, pasajeroNuevo.getId());
+            String nombreCompleto=scanner.nextLine();
+            if (!nombreCompleto.matches("[a-zA-Z\\s]+")) { //Valida que el nombre tenga solo letras
+                System.out.println("Error: El nombre completo solo puede contener letras y espacios.");
+               throw new PasajeroNoEncontradoException("El nombre completo solo puede contener letras y espacios");
+                // Termina el método si la entrada no es válida
+            }
+            Pasajero pasajeroNuevo = new Pasajero(nombreCompleto);
+            gestorCRUD.agregar(pasajeroNuevo, pasajeroNuevo.getId()); //LLamo a agregar del gestorCRUD generico
             System.out.println("Pasajero agregado con exito");
-            imprimirPantallaDetallesPasajero(pasajeroNuevo,"0");
+            imprimirPantallaDetallesPasajero(pasajeroNuevo,"0"); //Imprimo con Swing
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("ERROR EN CARGAR PASAJERO");
         }
     }
 
-    public void buscarPorNombre() throws PasajeroNoEncontradoException {
+    public void buscarPorNombre() throws PasajeroNoEncontradoException { //Busqueda por nombre
         //Busca por nombre
         boolean encontrado = false;
         System.out.println("Ingrese nombre de pasajero a buscar");
-        String pasajeroABuscar = scanner.nextLine(); //No uso upperCase porque uso equalsIgnoreCase
-        //Todo llamo Map.entry y creo dos variables pasajero y destino para no perder la generacidad en GestorCRUD
+        String pasajeroABuscar = scanner.nextLine();
         for (Map.Entry<String, Pasajero> entry : gestorCRUD.getTreeMap().entrySet()) {
             // entry.getValue() es el objeto Pasajero leido del treeMap
             Pasajero pasajero = entry.getValue();
             if (pasajero != null && pasajero.getNombreCompleto().equalsIgnoreCase(pasajeroABuscar)) {
+                //Si hay un pasajero y su nombre es igual al scanneado entonces lo muestro con system.out y Swing
                 System.out.println(entry.getValue());
                 imprimirPantallaDetallesPasajero(entry.getValue(),"B");
             }
@@ -62,11 +65,12 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         System.out.println("Ingrese Id del pasajero");
         String pasaporte = scanner.nextLine().toUpperCase();
         try {
-            pasajero = gestorCRUD.getTreeMap().get(pasaporte);
+            pasajero = gestorCRUD.getTreeMap().get(pasaporte);//Si encuentra el pasaporte que es el Id entonces
+            //entra al if y lo devuelve e imprime
             if (pasajero != null) {
                 System.out.println("pasajero encontrado");
                 System.out.println(pasajero); // Imprimir detalles del pasajero
-                imprimirPantallaDetallesPasajero(pasajero,"B");
+                imprimirPantallaDetallesPasajero(pasajero,"B"); //Muestreo con Swing
             } else {
                throw  new PasajeroNoEncontradoException("No se encontró ningún pasajero con el pasaporte: " + pasaporte);
             }
@@ -86,13 +90,18 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public Pasajero modificar()throws PasajeroNoEncontradoException {
+    public Pasajero modificar()throws PasajeroNoEncontradoException {//Modifica un pasajero
         try {
-            Pasajero pasajeroAModificar = buscarUnPasajeroID();
+            Pasajero pasajeroAModificar = buscarUnPasajeroID(); //Primero lo busco llamando al metodo buscar por ID
             if(pasajeroAModificar==null)
                 throw new PasajeroNoEncontradoException("No se encontro el pasajero");
-            System.out.println("Ingrese nuevo nombre completo");
-            pasajeroAModificar.setNombreCompleto(scanner.nextLine());
+            System.out.println("Ingrese nuevo nombre completo"); //Si lo encuentra entonces pido nuevo valor de nombre
+            String nombreCompleto=scanner.nextLine();
+            if (!nombreCompleto.matches("[a-zA-Z\\s]+")) { //Valido que tenga letras y numeros
+                System.out.println("Error: El nombre completo solo puede contener letras y espacios.");
+              throw new PasajeroNoEncontradoException("El nombre solo puede contener letras y espacios");// Terminar el método si la entrada no es válida
+            }
+            pasajeroAModificar.setNombreCompleto(scanner.nextLine()); //Seteo nombre y lo devuelvo modificado
             return pasajeroAModificar;
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("No se pudo modificar.");
@@ -100,21 +109,23 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
     }
 
     public Pasajero eliminar() throws PasajeroNoEncontradoException{
-        mostrarPasajeros();
-        Pasajero pasajeroAEliminar = buscarUnPasajeroID(); //
-        if (pasajeroAEliminar != null) {
+        mostrarPasajeros(); //Muestro pasajeros para que se vean los id para luego buscar y eliminar
+        Pasajero pasajeroAEliminar = buscarUnPasajeroID(); //LLamo metodo buscar por ID
+        if (pasajeroAEliminar != null) { //Si el metodo anterior lo encuentra entonces entra al if
             gestorCRUD.eliminar(pasajeroAEliminar, pasajeroAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
+          //LLamo a eliminar del gestorCRUD
             return pasajeroAEliminar;
         } else throw  new PasajeroNoEncontradoException("No se pudo eliminar el objeto");
     }
 
-    public void imprimirEliminarPasajero(Pasajero pasajero) {
+    public void imprimirEliminarPasajero(Pasajero pasajero) { //Cartelito para cuando elimine
         SwingUtilities.invokeLater(() -> {
-            String message = "El pasajero ha sido eliminado \uD83D\uDE22"; // Emoji de carita triste
+            String message = "El pasajero "+pasajero.getNombreCompleto()+" ha sido eliminado \uD83D\uDE22"; // Emoji de carita triste
             JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
         });
     }
     public  void imprimirPantallaDetallesPasajero(Pasajero pasajero,String i) {
+        // Imprime el detalle de un pasajero con Swing
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Detalles del Pasajero");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

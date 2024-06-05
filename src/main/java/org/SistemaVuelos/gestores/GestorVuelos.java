@@ -210,7 +210,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
 
 
     public Vuelo eliminar(GestorReservas gestorReservas) throws VueloNoEncontradoException { //elimina un vuelo
-        // TODO PREGUNTAR por si hay reservas activas o no puedo eliminar
+        // TODO Se elimina un vuelo siempre y cuando no tenga reservas asociadas
         mostrarVuelos();
         Vuelo vueloAEliminar = buscarUnVuelo();// Vuelo vueloAEliminar = gestorCRUD.getTreeMap().get(numVuelo);
         boolean encuentra = gestorReservas.gestorCRUD.getTreeMap().values().stream()
@@ -225,20 +225,20 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         }
     }
 
-    public Estado cambiarEstado() {
+    public Estado cambiarEstado() { //Cambia el estado a un vuelo
         boolean cargo = false;
         Estado estado = null;
         // Scanner scanner3 =new Scanner(System.in);
         while (!cargo) {
 
             // Buscar el destino correspondiente al nombre ingresado
-            for (Estado estMuestra : Estado.values()) {
+            for (Estado estMuestra : Estado.values()) {//Muestreo de los estados existentes en el enum
                 System.out.println(estMuestra);
             }
             System.out.println("Ingrese nuevo estado");
             String nuevoEstado = scanner.nextLine().trim().toUpperCase();
             for (Estado est : Estado.values()) {
-                if (est.name().equals(nuevoEstado)) {
+                if (est.name().equals(nuevoEstado)) { //Recorre los estados del enum hasta que encuentre el buscado y sale
                     estado = est;
                     break;
                 }
@@ -253,19 +253,24 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         return estado;
     }
 
-    public Vuelo modificar() throws VueloNoEncontradoException { //Modificar
+    public Vuelo modificar() throws VueloNoEncontradoException { //Modificar un vuelo
         //Reutilizo funciones de agregar
         try {
             System.out.println("Modificar un vuelo");
-            Vuelo vuelo = buscarUnVuelo();
+            Vuelo vuelo = buscarUnVuelo(); //Busca un vuelo
+            //Si el metodo anterior devuelve null entonces lanza una excepcion pesonalizada
             if (vuelo == null) throw new VueloNoEncontradoException("");
+            //Si el vuelo se encuentra se empieza a modificar
             System.out.println("Carga de destino nuevo");
-            Destinos destino = cargaDestino();
+            Destinos destino = cargaDestino(); //Llamo al metodo cargaDestino que se usa en agregar
+            //Si el destino esta vacio se lanza una excepcion personalizada
             if (destino == null) throw new VueloNoEncontradoException("");
 
+            //lo que sigue es en caso de que el vuelo se asigne otro destino y pase de nacional a internacional
+            // o de internacional a nacional. Entonces se modifica su letra identificatoria
             // Obtener la parte numérica del ID actual (tod excepto el primer carácter)
-            String numeroUnico = vuelo.getId().substring(1);
-            String idViejo = vuelo.getId();
+            String numeroUnico = vuelo.getId().substring(1);//Se obtiene el numero correspondiente del id del vuelo
+            String idViejo = vuelo.getId();//guardo el id "Viejo" para no perderlo a la hora de acceder al valor del treeMap
             String tipoID = null;
             if (destino.getTipo() != null) {  //SEGUN TIPO DE VUELO SERA SU DENOMINACION DE ID DE VUELO
                 // SI ES NACIONAL SE PASA N O SI ES INTERNACIONAL SE PASARA I Y POR DEFECTO D en case de que falle
@@ -279,16 +284,16 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                     tipoID = "I";
                 } else tipoID = "D";//DEFECTO "D"
             }
-            String nuevoId = tipoID + numeroUnico;
-            vuelo.setId(nuevoId); //Si se elije vuelo internacional cambia el prefijo
+            String nuevoId = tipoID + numeroUnico; //Se concatena La letra con el numero de vuelo obtenido
+            vuelo.setId(nuevoId); //Si se elije vuelo internacional cambia el prefijo o viceversa
             vuelo.setDestino(destino);
             vuelo.setTipoVuelo(destino.getTipo());
             System.out.println("Cambiar estado");
-            vuelo.setEstadoDeVuelo(cambiarEstado());
+            vuelo.setEstadoDeVuelo(cambiarEstado()); //Se cambia el estado
             System.out.println("Cargar horario salida");
-            vuelo.setHorarioSalida(cargaHorarioSalida());
-            gestorCRUD.modificarId(idViejo, nuevoId);
-            gestorCRUD.modificar(vuelo.getId(), vuelo);
+            vuelo.setHorarioSalida(cargaHorarioSalida()); //Y el horario si se desea
+            gestorCRUD.modificarId(idViejo, nuevoId); //Modifica el id viejo por el nuevo en el treeMap
+            gestorCRUD.modificar(vuelo.getId(), vuelo);//Y recien ahora se efectua la modificacion final
 
             return vuelo;
         } catch (Exception e) {
@@ -333,6 +338,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
     }
 
     public void imprimirEliminarVuelo(Vuelo vuelo) {
+        //Cartelito de eliminar vuelo con swing
         SwingUtilities.invokeLater(() -> {
             String message = "El vuelo " + vuelo.getId() + " con destino a " + vuelo.getDestino() + " ha sido eliminado \uD83D\uDE80"; // Emoji de cohete
             JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);

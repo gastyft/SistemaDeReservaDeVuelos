@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,9 +16,9 @@ public class GestorCRUD<T> implements CRUD<T> {
 
     public GestorCRUD() {
         treeMap = new TreeMap<>();
-    }
+    } //Inicializo el treeMap
 
-    public void agregar(T objeto, String idObj) {
+    public void agregar(T objeto, String idObj) { //Agrega un objeto al treeMap
         if (objeto != null && idObj != null) {
             treeMap.put(idObj, objeto);
         } else {
@@ -27,7 +26,7 @@ public class GestorCRUD<T> implements CRUD<T> {
         }
     }
 
-    public T buscar(String idABuscar) {
+    public T buscar(String idABuscar) { //busca un objeto del treeMap
         if (idABuscar != null) {
             T obj = treeMap.get(idABuscar);
             if (obj == null) {
@@ -40,14 +39,14 @@ public class GestorCRUD<T> implements CRUD<T> {
         }
     }
 
-    public void modificar(String idModificar, T obj) {
+    public void modificar(String idModificar, T obj) { //Modifica un objeto del treeMap pasando su clave y su valor
         if (idModificar != null && obj != null) {
             treeMap.put(idModificar, obj);
         } else System.out.println("Error al modificar");
     }
 
     public void modificarId(String idAntiguo, String nuevoId) { //Solo lo uso en Vuelo Si se modifica el destino de
-        //nacional a internacional o viceversa.
+        //nacional a internacional o viceversa para asignarle la nueva letra
         if (treeMap.containsKey(idAntiguo)) {
             // Extraer el objeto del TreeMap con el ID antiguo
             T objetoModificado = treeMap.remove(idAntiguo);
@@ -59,7 +58,7 @@ public class GestorCRUD<T> implements CRUD<T> {
     }
 
     @Override
-    public void eliminar(T obj, String idAEliminar) {
+    public void eliminar(T obj, String idAEliminar) { //Elimina un objeto del treeMap pasando su clave y su valor
         if (obj != null && idAEliminar != null) {
             boolean borrado = treeMap.remove(idAEliminar, obj);
             if (!borrado) {
@@ -69,21 +68,23 @@ public class GestorCRUD<T> implements CRUD<T> {
     }
 
     @Override
-    public void mostrar() {
+    public void mostrar() { //Muestra todos los objetos del treemap
+        //Con System.out y con Swing
         if (treeMap.isEmpty()) {
             System.out.println("El TreeMap está vacío.");
         } else {
             treeMap.forEach((key, value) -> System.out.println(value));
-            imprimirTreeMapEnSwing((TreeMap<String, T>) treeMap);
+            imprimirTreeMapEnSwing((TreeMap<String, T>) treeMap); //Llamada al metodo para imprimir un treeMap con Swing
         }
     }
 
     public Map<String, T> getTreeMap() {
         return treeMap;
     }
+    //Para obtener el treeMap y poder recorrerlo en las clases para hacer busquedas
 
 
-    public void imprimirTreeMapEnSwing(TreeMap<String, T> treeMap1) {
+    public void imprimirTreeMapEnSwing(TreeMap<String, T> treeMap1) { //Metodo de muestreo por Swing
 
         SwingUtilities.invokeLater(() -> {
 

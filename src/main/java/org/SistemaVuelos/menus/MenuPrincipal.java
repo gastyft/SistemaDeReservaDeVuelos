@@ -20,7 +20,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
               MenuPasajeros menuPasajeros = new MenuPasajeros();
               MenuReservas menuReservas = new MenuReservas(menuPasajeros.gestorPasajeros, menuVuelos.gestorVuelos);
 
-              System.out.println("BIENVENIDO");
+              System.out.println("BIENVENIDO");     //String de menu con opciones
               String menu = """
                       ---------------------MENU PRINCIPAL-------------------
                       1-Gestion de Vuelos
@@ -35,7 +35,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
                   System.out.println(menu);
                   opc = scanner.nextLine().toUpperCase();
 
-                  switch (opc) {
+                  switch (opc) { //Llamada a los distintos menus con sus gestores
                       case "1" -> menuVuelos.menuVuelos(menuReservas.gestorReservas);
                       case "2" -> menuPasajeros.menuPasajeros();
                       case "3" -> menuReservas.menuReservas();
@@ -49,7 +49,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
               System.out.println("Salio del sistema. Gracias");
 
         }
-    private void mostrarInformacionContacto() {
+    private void mostrarInformacionContacto() { //Funcion extra con Swing
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Contactar al Desarrollador");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -83,7 +83,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
         });
     }
 
-    private void abrirEnlaceEnNavegador(String url) {
+    private void abrirEnlaceEnNavegador(String url) { //Abridor de enlaces al navegador desde un Button
         if (Desktop.isDesktopSupported()) {
             try {
                 Desktop desktop = Desktop.getDesktop();

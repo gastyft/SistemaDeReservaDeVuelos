@@ -17,7 +17,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
     public void menuVuelos(GestorReservas gestorReservas) {
 
 
-
+    //String menu de opciones
     String menu = """
             ---------------------MENU VUELOS-------------------
             1-Agregar Vuelo
@@ -36,14 +36,14 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
         opc = scanner.nextLine().toUpperCase();
         switch (opc) {
             case "1" ->
-            {try {
+            {try { // Agrega un nuevo vuelo
                 gestorVuelos.agregarVuelo();
             }catch (VueloNoEncontradoException e){
                 System.out.println(e.getMessage());
             }
             }
-            case "2" -> gestorVuelos.mostrarVuelos();
-            case "3" -> {
+            case "2" -> gestorVuelos.mostrarVuelos(); //muestreo de vuelos
+            case "3" -> { //Muestra destinos del enum y busca vuelos por destinos
                 gestorVuelos.listaDestinos();
                 try {
                     List<Vuelo> vueloList =gestorVuelos.buscarPorDestinos();
@@ -51,7 +51,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                     System.out.println(e.getMessage());
                 }
             }
-            case "4" -> {
+            case "4" -> { //Muestreo de vuelos y busca un vuelo por ID e imprime con Swing
                 gestorVuelos.mostrarVuelos();
                 try {
                     Vuelo vuelo= gestorVuelos.buscarUnVuelo();
@@ -61,7 +61,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 }
             }
             case "5" -> {
-                try {
+                try { //Muestreo de vuelos y modificacion
                     gestorVuelos.mostrarVuelos();
                    Vuelo vuelo =  gestorVuelos.modificar();
                     gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
@@ -70,7 +70,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 }
             }
             case "6" -> {
-                try {
+                try { // Elimina un vuelo validando que no hay reservas para ese vuelo e imprime con swing
                    Vuelo vuelo= gestorVuelos.eliminar(gestorReservas);
                     gestorVuelos.imprimirEliminarVuelo(vuelo);
                 } catch (VueloNoEncontradoException e) {
@@ -78,7 +78,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 }
             }
             case "7"->{
-              try{
+              try{ //Busca un vuelo por Id y cambia el estado e imprime la actualizacion con Swing
                   Vuelo vuelo = gestorVuelos.buscarUnVuelo();
                   if(vuelo ==null) throw new VueloNoEncontradoException("");
                Estado estado = gestorVuelos.cambiarEstado();

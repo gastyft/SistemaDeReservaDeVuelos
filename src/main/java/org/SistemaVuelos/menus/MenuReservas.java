@@ -17,12 +17,13 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
     GestorReservas gestorReservas;
 
     public MenuReservas(GestorPasajeros gestorPasajeros, GestorVuelos gestorVuelos) {
-        this.gestorReservas = new GestorReservas(gestorPasajeros, gestorVuelos);
+        this.gestorReservas = new GestorReservas(gestorPasajeros, gestorVuelos); //Inicializo el gestor reservas
+        //Trayendo el gestor pasajeros y gestor vuelos que cada uno tiene sus respectivos treeMap necesarios para las reservas
     }
 
 
     public void menuReservas() {
-
+        //String de menu de opciones
         String menu = """
                 ---------------------MENU RESERVAS-------------------
                 1-Agregar Reserva
@@ -43,16 +44,16 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
             opc = scanner.nextLine().toUpperCase();
             switch (opc) {
                 case "1" -> {
-                    try {
+                    try { //Agregar reservas
                         gestorReservas.agregarReserva();
                     } catch (ReservaNoEncontradaException | PasajeroNoEncontradoException |
                              VueloNoEncontradoException e) {
                         System.out.println(e.getMessage());
                     }
                 }
-                case "2" -> gestorReservas.mostrarReservas();
+                case "2" -> gestorReservas.mostrarReservas(); //Muestreo de reservas
                 case "3" -> {
-                    gestorReservas.mostrarReservas();
+                    gestorReservas.mostrarReservas(); //Muestreo de reservas y busquedas por vuelos
                     try {
                         List<Reserva> busquedaReservasPorVuelo = gestorReservas.buscarReservasPorVuelo();
                     } catch (ReservaNoEncontradaException | VueloNoEncontradoException e) {
@@ -60,7 +61,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                     }
                 }
                 case "4" -> {
-                    try {
+                    try { //Busqueda de una reserva por ID e imprime con Swing
                         gestorReservas.mostrarReservas();
                         Reserva reserva = gestorReservas.buscarUnaReservaPorID();
                         gestorReservas.imprimirPantallaDetallesReserva(reserva,"B");
@@ -70,7 +71,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 }
 
                 case "5" -> {
-                    try {
+                    try { //Busqueda de reservas por pasajero
                         List<Reserva> reservasPorPasajeroList = gestorReservas.buscarReservasPorPasajero();
                     } catch (ReservaNoEncontradaException | PasajeroNoEncontradoException e) {
                         System.out.println(" ");
@@ -78,7 +79,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 }
 
                 case "6" -> {
-                    try {
+                    try { //Muestreo de reservas y modificar una reserva
                         gestorReservas.mostrarReservas();
                         gestorReservas.modificarReserva();
                     } catch (PasajeroNoEncontradoException | ReservaNoEncontradaException | VueloNoEncontradoException |
@@ -87,7 +88,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                     }
                 }
                 case "7" -> {
-                    try {
+                    try { //Elimina una reserva e imprime cartelito de eliminacion
                         Reserva reserva = gestorReservas.eliminar();
                         gestorReservas.imprimirEliminarReserva(reserva);
                     } catch (ReservaNoEncontradaException e) {
@@ -95,7 +96,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                     }
                 }
                 case "8" -> {
-                    try {
+                    try { // Busca una reserva por Id y cancela la reserva
                         Reserva reserva = gestorReservas.buscarUnaReservaPorID();
                         if (reserva == null) throw new ReservaNoEncontradaException(" ");
                         gestorReservas.cancelarReserva(reserva);
@@ -106,7 +107,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
 
                 }
                 case "9" -> {
-                    try {
+                    try { //Da de alta una reserva cancelada
                       gestorReservas.darDeAltaReservaCancelada();
 
                     } catch (ReservaNoEncontradaException | AsientoNoDisponibleException e) {
@@ -118,8 +119,8 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 default -> System.out.println("Opcion incorrecta. Elija nuevamente");
             }
 
-        } while (!opc.equalsIgnoreCase("Esc"));
+        } while (!opc.equalsIgnoreCase("Esc")); //sale del menu reservas
 
-        System.out.println("Salio de la Gestion de Vuelos");
+        System.out.println("Salio de la Gestion de Reservas");
     }
 }
