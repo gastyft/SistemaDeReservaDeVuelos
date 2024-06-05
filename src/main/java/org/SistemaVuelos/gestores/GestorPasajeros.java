@@ -6,6 +6,8 @@ import org.SistemaVuelos.menus.MenuPrincipal;
 import org.SistemaVuelos.model.Pasajero;
 import org.SistemaVuelos.model.Vuelo;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -30,6 +32,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             Pasajero pasajeroNuevo = new Pasajero(scanner.nextLine());
             gestorCRUD.agregar(pasajeroNuevo, pasajeroNuevo.getId());
             System.out.println("Pasajero agregado con exito");
+            imprimirPantallaDetallesPasajero(pasajeroNuevo,"0");
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("ERROR EN CARGAR PASAJERO");
         }
@@ -46,6 +49,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             Pasajero pasajero = entry.getValue();
             if (pasajero != null && pasajero.getNombreCompleto().equalsIgnoreCase(pasajeroABuscar)) {
                 System.out.println(entry.getValue());
+                imprimirPantallaDetallesPasajero(entry.getValue(),"B");
             }
         }
         if (!encontrado) {
@@ -62,6 +66,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             if (pasajero != null) {
                 System.out.println("pasajero encontrado");
                 System.out.println(pasajero); // Imprimir detalles del pasajero
+                imprimirPantallaDetallesPasajero(pasajero,"B");
             } else {
                throw  new PasajeroNoEncontradoException("No se encontró ningún pasajero con el pasaporte: " + pasaporte);
             }
@@ -81,26 +86,63 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public void modificar()throws PasajeroNoEncontradoException {
+    public Pasajero modificar()throws PasajeroNoEncontradoException {
         try {
             Pasajero pasajeroAModificar = buscarUnPasajeroID();
             if(pasajeroAModificar==null)
                 throw new PasajeroNoEncontradoException("No se encontro el pasajero");
             System.out.println("Ingrese nuevo nombre completo");
             pasajeroAModificar.setNombreCompleto(scanner.nextLine());
+            return pasajeroAModificar;
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("No se pudo modificar.");
         }
     }
 
-    public void eliminar() throws PasajeroNoEncontradoException{
+    public Pasajero eliminar() throws PasajeroNoEncontradoException{
         mostrarPasajeros();
         Pasajero pasajeroAEliminar = buscarUnPasajeroID(); //
         if (pasajeroAEliminar != null) {
             gestorCRUD.eliminar(pasajeroAEliminar, pasajeroAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
+            return pasajeroAEliminar;
         } else throw  new PasajeroNoEncontradoException("No se pudo eliminar el objeto");
     }
 
+    public void imprimirEliminarPasajero(Pasajero pasajero) {
+        SwingUtilities.invokeLater(() -> {
+            String message = "El pasajero ha sido eliminado \uD83D\uDE22"; // Emoji de carita triste
+            JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+    public  void imprimirPantallaDetallesPasajero(Pasajero pasajero,String i) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Detalles del Pasajero");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(400, 200);
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 1)); // Una columna y filas automáticas
+            JLabel label1;
+            if(i.equals("1"))
+             label1 = new JLabel("ACTUALIZACION");
+            else if(i.equals("0"))label1 =new JLabel("PASAJERO AGREGADO");
+            else label1 = new JLabel("PASAJERO ENCONTRADO");
+            label1.setBackground(Color.RED); // Cambia el color de fondo a rojo
+            label1.setOpaque(true); // Esto es necesario para que el color de fondo sea visible
+            panel.add(label1);
+
+            JLabel label = new JLabel("Detalles del Pasajero:");
+            label.setFont(new Font("Arial", Font.BOLD, 18));
+            panel.add(label);
+
+            panel.add(new JLabel("ID: " + pasajero.getId()));
+            panel.add(new JLabel("Nombre completo: " + pasajero.getNombreCompleto()));
+
+            frame.add(panel);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
 }
 
 

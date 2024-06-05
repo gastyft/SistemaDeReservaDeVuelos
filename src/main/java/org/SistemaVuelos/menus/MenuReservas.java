@@ -62,7 +62,8 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 case "4" -> {
                     try {
                         gestorReservas.mostrarReservas();
-                        gestorReservas.buscarUnaReservaPorID();
+                        Reserva reserva = gestorReservas.buscarUnaReservaPorID();
+                        gestorReservas.imprimirPantallaDetallesReserva(reserva,"B");
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Reserva no encontrado");
                     }
@@ -87,7 +88,8 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 }
                 case "7" -> {
                     try {
-                        gestorReservas.eliminar();
+                        Reserva reserva = gestorReservas.eliminar();
+                        gestorReservas.imprimirEliminarReserva(reserva);
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Reserva no encontrada. No se pudo eliminar");
                     }
@@ -105,7 +107,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 }
                 case "9" -> {
                     try {
-                        gestorReservas.darDeAltaReservaCancelada();
+                      gestorReservas.darDeAltaReservaCancelada();
 
                     } catch (ReservaNoEncontradaException | AsientoNoDisponibleException e) {
                         System.out.println(" ");

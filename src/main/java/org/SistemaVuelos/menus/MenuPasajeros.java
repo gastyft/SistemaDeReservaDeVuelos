@@ -2,6 +2,7 @@ package org.SistemaVuelos.menus;
 
 import org.SistemaVuelos.exceptions.PasajeroNoEncontradoException;
 import org.SistemaVuelos.gestores.GestorPasajeros;
+import org.SistemaVuelos.model.Pasajero;
 
 import java.util.Scanner;
 
@@ -46,7 +47,8 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 }
                 case "4" -> {
                     try {
-                        gestorPasajeros.buscarUnPasajeroID();
+                       Pasajero pasajero= gestorPasajeros.buscarUnPasajeroID();
+                        gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"B");
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");
                     }
@@ -54,7 +56,8 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
 
                 case "5" -> {
                     try {
-                        gestorPasajeros.modificar();
+                    Pasajero pasajero =   gestorPasajeros.modificar();
+                        gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"1");
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");
                     }
@@ -62,7 +65,8 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
 
                 case "6" -> {
                     try {
-                        gestorPasajeros.eliminar();
+                       Pasajero pasajero = gestorPasajeros.eliminar();
+                        gestorPasajeros.imprimirEliminarPasajero(pasajero);
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");
                     }

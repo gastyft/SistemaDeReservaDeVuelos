@@ -10,8 +10,11 @@ import org.SistemaVuelos.model.Pasajero;
 import org.SistemaVuelos.model.Reserva;
 import org.SistemaVuelos.model.Vuelo;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class GestorReservas { //GESTOR DE CARGA DE DATOS
@@ -121,6 +124,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 Reserva reservaNueva = new Reserva(pasajero, vuelo, tipoAsiento);
                 gestorCRUD.agregar(reservaNueva, reservaNueva.getId());
                 System.out.println("Reserva agregada");
+                imprimirPantallaDetallesReserva(reservaNueva,"0");
             } else {
                 throw new ReservaNoEncontradaException("No hay asientos disponibles en este vuelo");
             }
@@ -146,14 +150,19 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
         if (vueloABuscar == null) {
             throw new VueloNoEncontradoException("Vuelo no encontrado");
         }
-
+        TreeMap<String,Reserva> reservaTreeMap = new TreeMap<>();
         List<Reserva> reservasFiltradas = gestorCRUD.getTreeMap().values().stream()
                 .filter(reserva -> reserva.getVueloReserva().getId().equals(vueloABuscar.getId()))
                 .toList();
+
         if (reservasFiltradas.isEmpty()) {
             throw new ReservaNoEncontradaException("No se encontraron reservas asociadas a ese vuelo");
         } else {
+            for (Reserva reserva : reservasFiltradas) { //Para imprimir con Swing
+                reservaTreeMap.put(reserva.getId(), reserva);
+            }
             reservasFiltradas.forEach(System.out::println);
+            gestorCRUD.imprimirTreeMapEnSwing(reservaTreeMap);
         }
 
         return reservasFiltradas;
@@ -164,16 +173,24 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
         if (pasajeroABuscar == null) {
             throw new PasajeroNoEncontradoException("Pasajero no encontrado");
         }
+        TreeMap<String,Reserva> reservaTreeMap= new TreeMap<>();
         List<Reserva> reservasFiltradas = gestorCRUD.getTreeMap().values().stream()
                 .filter(reserva -> reserva.getPasajeroReserva().getId().equals(pasajeroABuscar.getId()))
                 .toList();
         if (reservasFiltradas.isEmpty()) {
             throw new ReservaNoEncontradaException("No se encontraron reservas asociadas a ese vuelo");
         } else {
+            for (Reserva reserva : reservasFiltradas) {
+                reservaTreeMap.put(reserva.getId(), reserva);
+            }
             reservasFiltradas.forEach(System.out::println);
+            gestorCRUD.imprimirTreeMapEnSwing(reservaTreeMap);
         }
+
         return reservasFiltradas;
-    }
+        }
+
+
 
     public Reserva buscarUnaReservaPorID() throws ReservaNoEncontradaException { //busca y devuelve un pasajero
         Reserva reserva = null;
@@ -236,6 +253,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             reserva.setVueloReserva(vuelo);
             reserva.setTipoAsientoPasajero(tipoAsiento);
             System.out.println("Reserva modificada\n" + reserva);
+            imprimirPantallaDetallesReserva(reserva,"1");
         } catch (Exception e) {
             System.out.println("Error al modificar una reserva");
         }
@@ -256,6 +274,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 if (reserva.getTipoAsientoPasajero().equals(TipoAsiento.PRIMERA))//Sumo mas 1 a asientos primera del vuelo asociado
                     reserva.getVueloReserva().setCantAsientosPri(reserva.getVueloReserva().getCantAsientosPri() + 1);
                 System.out.println("Reserva cancelada");
+                imprimirCancelarReserva(reserva);
             }
         } catch (Exception e) {
             System.out.println("No se encontro la reserva");
@@ -297,7 +316,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 }
             } else throw new AsientoNoDisponibleException("No hay asientos disponibles");
             reserva.setActivo(true);
-
+             imprimirActivarReservaCancelada(reserva);
         } catch (Exception e) {
             System.out.println("Error en dar de alta");
         }
@@ -314,18 +333,70 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public void eliminar()throws ReservaNoEncontradaException {
+    public Reserva eliminar()throws ReservaNoEncontradaException {
         mostrarReservas();
         Reserva reservaAEliminar = buscarUnaReservaPorID();
         if (reservaAEliminar != null) {
             gestorCRUD.eliminar(reservaAEliminar, reservaAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
+        return reservaAEliminar;
         } else throw  new ReservaNoEncontradaException("No se pudo eliminar la reserva");
     }
 
 
+    public  void imprimirPantallaDetallesReserva(Reserva reserva,String i) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Detalles de la Reserva");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(500, 300);
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 1)); // Una columna y filas automáticas
+            JLabel label1;
+            if(i.equals("1"))
+               label1 = new JLabel("ACTUALIZACION");
+            else if(i.equals("0"))
+                label1 = new JLabel("RESERVA AGREGADA");
+            else label1 = new JLabel("RESERVA ENCONTRADA");
+            label1.setBackground(Color.RED); // Cambia el color de fondo a rojo
+            label1.setOpaque(true); // Esto es necesario para que el color de fondo sea visible
+            panel.add(label1);
+
+            JLabel label = new JLabel("Detalles de la Reserva:");
+            label.setFont(new Font("Arial", Font.BOLD, 18));
+            panel.add(label);
+
+            panel.add(new JLabel("ID: " + reserva.getId()));
+            panel.add(new JLabel("Pasajero: " + reserva.getPasajeroReserva().getNombreCompleto()));
+            panel.add(new JLabel("Vuelo: " + reserva.getVueloReserva().getId()));
+            panel.add(new JLabel("Destino del vuelo: " + reserva.getVueloReserva().getDestino()));
+            panel.add(new JLabel("Horario de salida: " + reserva.getVueloReserva().getHorarioSalida()));
+            panel.add(new JLabel("Estado del vuelo: " + reserva.getVueloReserva().getEstadoDeVuelo()));
+            panel.add(new JLabel("Tipo de vuelo: " + reserva.getVueloReserva().getTipoVuelo()));
+            panel.add(new JLabel("Tipo de asiento: " + reserva.getTipoAsientoPasajero()));
+            panel.add(new JLabel("Estado de la reserva: " + (reserva.isActivo() ? "Activa" : "Dada de baja")));
+
+            frame.add(panel);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
 
     }
-
-
-
-}
+    public  void imprimirEliminarReserva(Reserva reserva) {
+        SwingUtilities.invokeLater(() -> {
+            String message = "La reserva ha sido eliminada \u2705"; // Emoji de marca de verificación
+            JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+    public void imprimirCancelarReserva(Reserva reserva) {
+        SwingUtilities.invokeLater(() -> {
+            String message = "La reserva " + reserva.getId() + " ha sido cancelada \uD83D\uDEAB"; // Emoji de prohibición
+            JOptionPane.showMessageDialog(null, message, "Cancelada", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+    public void imprimirActivarReservaCancelada(Reserva reserva) {
+        SwingUtilities.invokeLater(() -> {
+            String message = "La reserva " + reserva.getId() + " ha sido reactivada \uD83D\uDCAF"; // Emoji de 100 puntos
+            JOptionPane.showMessageDialog(null, message, "Reactivada", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+    }

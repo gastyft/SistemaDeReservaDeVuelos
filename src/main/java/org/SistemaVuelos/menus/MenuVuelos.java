@@ -55,6 +55,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 gestorVuelos.mostrarVuelos();
                 try {
                     Vuelo vuelo= gestorVuelos.buscarUnVuelo();
+                    gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"B");
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
@@ -63,14 +64,15 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 try {
                     gestorVuelos.mostrarVuelos();
                    Vuelo vuelo =  gestorVuelos.modificar();
-                    gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
+                    gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
                 }catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
             }
             case "6" -> {
                 try {
-                    gestorVuelos.eliminar(gestorReservas);
+                   Vuelo vuelo= gestorVuelos.eliminar(gestorReservas);
+                    gestorVuelos.imprimirEliminarVuelo(vuelo);
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
@@ -80,7 +82,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                   Vuelo vuelo = gestorVuelos.buscarUnVuelo();
                   if(vuelo ==null) throw new VueloNoEncontradoException("");
                Estado estado = gestorVuelos.cambiarEstado();
-               gestorVuelos.imprimirPantallaDetallesVuelo(vuelo);
+               gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
                if(vuelo != null && estado!= null){
                    vuelo.setEstadoDeVuelo(estado);
                }

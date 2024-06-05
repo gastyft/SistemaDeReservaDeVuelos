@@ -133,7 +133,8 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 Vuelo vuelo = new Vuelo(destino, cargaHorarioSalida(), Estado.PROGRAMADO, destino.getTipo(), tipoID);
                 gestorCRUD.agregar(vuelo, vuelo.getId()); //Agrego en gestor generico
                 System.out.println("Vuelo creado con exito");
-                System.out.println("\n"+vuelo);
+                //System.out.println("\n" + vuelo);
+                imprimirPantallaDetallesVuelo(vuelo,"0");
             } else throw new VueloNoEncontradoException("ERROR al agregar un nuevo vuelo");
         } catch (Exception e) {
             System.out.println("Error en agregar el vuelo: " + e.getMessage());
@@ -155,13 +156,16 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         // Scanner scanner1 =new Scanner(System.in);
         String destinoABuscar = scanner.nextLine(); //No uso upperCase porque uso equalsIgnoreCase
         //Todo llamo Map.entry y creo dos variables vuelo y destino para no perder la generacidad en GestorCRUD
+        TreeMap<String,Vuelo> vueloTreeMap= new TreeMap<>();
         for (Map.Entry<String, Vuelo> entry : gestorCRUD.getTreeMap().entrySet()) {
             // entry.getValue() es el objeto Vuelo leido del treeMap
             Destinos destino = entry.getValue().getDestino();
 
             if (destino != null && destino.getNombre().equalsIgnoreCase(destinoABuscar)) {
+                vueloTreeMap.put(entry.getKey(),entry.getValue()); //PARA IMPRIMIR CON SWING
+
                 vueloList.add(entry.getValue());
-                System.out.println("Vuelos encontrados con destino a "+destino);
+                System.out.println("Vuelos encontrados con destino a " + destino);
                 System.out.println(entry.getValue());
                 encontrado = true;
 
@@ -169,6 +173,9 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         }
         if (!encontrado) {
             throw new VueloNoEncontradoException("No se encontraron vuelos para el destino: " + destinoABuscar);
+        }else
+        {
+            gestorCRUD.imprimirTreeMapEnSwing(vueloTreeMap);
         }
         return vueloList;
     }
@@ -202,17 +209,17 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
     }
 
 
-    public void eliminar(GestorReservas gestorReservas) throws VueloNoEncontradoException { //elimina un vuelo
+    public Vuelo eliminar(GestorReservas gestorReservas) throws VueloNoEncontradoException { //elimina un vuelo
         // TODO PREGUNTAR por si hay reservas activas o no puedo eliminar
         mostrarVuelos();
         Vuelo vueloAEliminar = buscarUnVuelo();// Vuelo vueloAEliminar = gestorCRUD.getTreeMap().get(numVuelo);
-      boolean  encuentra =  gestorReservas.gestorCRUD.getTreeMap().values().stream()
+        boolean encuentra = gestorReservas.gestorCRUD.getTreeMap().values().stream()
                 .anyMatch(r -> r.getVueloReserva().equals(vueloAEliminar));
         if ((vueloAEliminar != null && !encuentra)) { //valido que no exista una reserva con ese vuelo a eliminar
             gestorCRUD.eliminar(vueloAEliminar, vueloAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
-        } else
-        {
-            if(vueloAEliminar==null)
+            return vueloAEliminar;
+        } else {
+            if (vueloAEliminar == null)
                 throw new VueloNoEncontradoException("No se pudo eliminar el Vuelo");
             else throw new VueloNoEncontradoException("Tiene reservas asociada a este vuelo");
         }
@@ -251,10 +258,10 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         try {
             System.out.println("Modificar un vuelo");
             Vuelo vuelo = buscarUnVuelo();
-            if(vuelo ==null) throw new VueloNoEncontradoException("");
+            if (vuelo == null) throw new VueloNoEncontradoException("");
             System.out.println("Carga de destino nuevo");
             Destinos destino = cargaDestino();
-            if(destino==null) throw new VueloNoEncontradoException("");
+            if (destino == null) throw new VueloNoEncontradoException("");
 
             // Obtener la parte numérica del ID actual (tod excepto el primer carácter)
             String numeroUnico = vuelo.getId().substring(1);
@@ -262,7 +269,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             String tipoID = null;
             if (destino.getTipo() != null) {  //SEGUN TIPO DE VUELO SERA SU DENOMINACION DE ID DE VUELO
                 // SI ES NACIONAL SE PASA N O SI ES INTERNACIONAL SE PASARA I Y POR DEFECTO D en case de que falle
-              
+
                 if (destino.getTipo().equals(TipoDeVuelo.NACIONAL)) {
                     // Si es igual a NACIONAL
                     tipoID = "N";
@@ -270,17 +277,17 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 } else if (destino.getTipo().equals(TipoDeVuelo.INTERNACIONAL)) {
                     // Si es igual a INTERNACIONAL
                     tipoID = "I";
-                }else tipoID="D";//DEFECTO "D"
+                } else tipoID = "D";//DEFECTO "D"
             }
             String nuevoId = tipoID + numeroUnico;
-                vuelo.setId(nuevoId); //Si se elije vuelo internacional cambia el prefijo
+            vuelo.setId(nuevoId); //Si se elije vuelo internacional cambia el prefijo
             vuelo.setDestino(destino);
             vuelo.setTipoVuelo(destino.getTipo());
             System.out.println("Cambiar estado");
             vuelo.setEstadoDeVuelo(cambiarEstado());
             System.out.println("Cargar horario salida");
             vuelo.setHorarioSalida(cargaHorarioSalida());
-            gestorCRUD.modificarId(idViejo,nuevoId);
+            gestorCRUD.modificarId(idViejo, nuevoId);
             gestorCRUD.modificar(vuelo.getId(), vuelo);
 
             return vuelo;
@@ -289,7 +296,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         }
     }
 
-    public void imprimirPantallaDetallesVuelo(Vuelo vuelo) { //Imprime con Swing una actualizacion sobre un vuelo
+    public void imprimirPantallaDetallesVuelo(Vuelo vuelo,String i) { //Imprime con Swing una actualizacion sobre un vuelo
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Detalles del Vuelo");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -297,8 +304,11 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
 
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(0, 1)); // Una columna y filas automáticas
-
-            JLabel label1 = new JLabel("ACTUALIZACION");
+            JLabel label1;
+            if(i.equals("1"))
+             label1 = new JLabel("ACTUALIZACION");
+            else if(i.equals("0")) label1 = new JLabel("VUELO AGREGADO");
+            else label1 = new JLabel("VUELO ENCONTRADO");
             label1.setBackground(Color.RED); // Cambia el color de fondo a rojo
             label1.setOpaque(true); // Esto es necesario para que el color de fondo sea visible
             panel.add(label1);
@@ -322,6 +332,12 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
         });
     }
 
+    public void imprimirEliminarVuelo(Vuelo vuelo) {
+        SwingUtilities.invokeLater(() -> {
+            String message = "El vuelo " + vuelo.getId() + " con destino a " + vuelo.getDestino() + " ha sido eliminado \uD83D\uDE80"; // Emoji de cohete
+            JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
 }
 
 
