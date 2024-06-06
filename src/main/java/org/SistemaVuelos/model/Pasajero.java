@@ -10,7 +10,7 @@ public class Pasajero {
     private String nombreCompleto;
 
     public Pasajero(String nombreCompleto) {
-        this.id ="PAO"+autoId++;  //PASAPORTE ARGENTINO ORIGINAL por tres (3) letras y seis (6) números.
+        this.id = STR."PAO\{autoId++}";  //PASAPORTE ARGENTINO ORIGINAL por tres (3) letras y seis (6) números.
         this.nombreCompleto = nombreCompleto;
     }
     public String getId() {
@@ -29,7 +29,7 @@ public class Pasajero {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Pasajero pasajeros)) return false;
-        return getId() == pasajeros.getId() && Objects.equals(getNombreCompleto(), pasajeros.getNombreCompleto());
+        return getId().equals(pasajeros.getId()) && Objects.equals(getNombreCompleto(), pasajeros.getNombreCompleto());
     }
 
     @Override

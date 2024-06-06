@@ -23,7 +23,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 6-Eliminar por ID
                 ESCRIBA "ESC" PARA VOLVER AL MENU PRINCIPAL
                 """;
-        String opc = "Esc";
+        String opc;
         Scanner scanner = new Scanner(System.in);
         do { // do while con opc en String
             System.out.println(menu); //Imprime menu

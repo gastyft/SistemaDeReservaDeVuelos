@@ -13,7 +13,7 @@ public class Reserva {
     private boolean activo;
 
     public Reserva(Pasajero pasajeroReserva, Vuelo vueloReserva, TipoAsiento tipoAsientoPasajero) {
-        this.id = "RR"+autoId++;
+        this.id = STR."RR\{autoId++}";
         this.pasajeroReserva = pasajeroReserva;
         this.vueloReserva = vueloReserva;
         this.tipoAsientoPasajero = tipoAsientoPasajero;

@@ -3,22 +3,18 @@ package org.SistemaVuelos.gestores;
 import org.SistemaVuelos.enums.Destinos;
 import org.SistemaVuelos.enums.Estado;
 import org.SistemaVuelos.enums.TipoDeVuelo;
-import org.SistemaVuelos.exceptions.ReservaNoEncontradaException;
 import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
-import org.SistemaVuelos.menus.MenuVuelos;
 import org.SistemaVuelos.model.Vuelo;
-
 import javax.swing.*;
 import java.awt.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import java.util.*;
 import java.util.List;
 
 public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
-    GestorCRUD<Vuelo> gestorCRUD = new GestorCRUD<Vuelo>();
+    GestorCRUD<Vuelo> gestorCRUD = new GestorCRUD<>();
     Scanner scanner = new Scanner(System.in);
 
     public void listaDestinos() { //muestro los destinos posibles de los vuelos
@@ -32,11 +28,11 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
     public LocalDateTime cargaHorarioSalida() {
 
         LocalDateTime horarioSalida = null;
-        int hora = 0;
-        int min = 0;
-        int anio = 0;
-        int mes = 0;
-        int dia = 0;
+        int hora;
+        int min;
+        int anio;
+        int mes;
+        int dia;
 
         boolean fechaValida = false;
         while (!fechaValida) {
@@ -107,7 +103,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             }
             if (destino != null) {
                 cargo = true;
-                System.out.println("Has seleccionado el destino: " + destino.getNombre());
+                System.out.println(STR."Has seleccionado el destino: \{destino.getNombre()}");
             } else {
                 System.out.println("El destino ingresado no está en la lista de destinos disponibles.");
             }
@@ -137,7 +133,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 imprimirPantallaDetallesVuelo(vuelo,"0");
             } else throw new VueloNoEncontradoException("ERROR al agregar un nuevo vuelo");
         } catch (Exception e) {
-            System.out.println("Error en agregar el vuelo: " + e.getMessage());
+            System.out.println(STR."Error en agregar el vuelo: \{e.getMessage()}");
         }
     }
 
@@ -165,14 +161,14 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 vueloTreeMap.put(entry.getKey(),entry.getValue()); //PARA IMPRIMIR CON SWING
 
                 vueloList.add(entry.getValue());
-                System.out.println("Vuelos encontrados con destino a " + destino);
+                System.out.println(STR."Vuelos encontrados con destino a \{destino}");
                 System.out.println(entry.getValue());
                 encontrado = true;
 
             }
         }
         if (!encontrado) {
-            throw new VueloNoEncontradoException("No se encontraron vuelos para el destino: " + destinoABuscar);
+            throw new VueloNoEncontradoException(STR."No se encontraron vuelos para el destino: \{destinoABuscar}");
         }else
         {
             gestorCRUD.imprimirTreeMapEnSwing(vueloTreeMap);
@@ -198,12 +194,12 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 System.out.println(vuelo); // Imprimir detalles del vuelo
 
             } else { //tira una nueva excepcion en el momento si no se encontro el vuelo
-                throw new VueloNoEncontradoException("No se encontró ningún vuelo con el número: " + num);
+                throw new VueloNoEncontradoException(STR."No se encontró ningún vuelo con el número: \{num}");
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
         } catch (Exception e) {
-            System.out.println("Error en la búsqueda: " + e.getMessage());
+            System.out.println(STR."Error en la búsqueda: \{e.getMessage()}");
         }
         return vuelo;
     }
@@ -245,7 +241,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             }
             if (estado != null) {
                 cargo = true;
-                System.out.println("Has seleccionado el estado: " + estado);
+                System.out.println(STR."Has seleccionado el estado: \{estado}");
             } else {
                 System.out.println("El destino ingresado no está en la lista de destinos disponibles.");
             }
@@ -271,7 +267,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             // Obtener la parte numérica del ID actual (tod excepto el primer carácter)
             String numeroUnico = vuelo.getId().substring(1);//Se obtiene el numero correspondiente del id del vuelo
             String idViejo = vuelo.getId();//guardo el id "Viejo" para no perderlo a la hora de acceder al valor del treeMap
-            String tipoID = null;
+            String tipoID=null;
             if (destino.getTipo() != null) {  //SEGUN TIPO DE VUELO SERA SU DENOMINACION DE ID DE VUELO
                 // SI ES NACIONAL SE PASA N O SI ES INTERNACIONAL SE PASARA I Y POR DEFECTO D en case de que falle
 
@@ -323,11 +319,11 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             label.setFont(new Font("Arial", Font.BOLD, 18));
             panel.add(label);
 
-            panel.add(new JLabel("ID: " + vuelo.getId()));
-            panel.add(new JLabel("Destino: " + vuelo.getDestino()));
-            panel.add(new JLabel("Horario de salida: " + vuelo.getHorarioSalida()));
-            panel.add(new JLabel("Estado de vuelo: " + vuelo.getEstadoDeVuelo()));
-            panel.add(new JLabel("Tipo de vuelo: " + vuelo.getTipoVuelo()));
+            panel.add(new JLabel(STR."ID: \{vuelo.getId()}"));
+            panel.add(new JLabel(STR."Destino: \{vuelo.getDestino()}"));
+            panel.add(new JLabel(STR."Horario de salida: \{vuelo.getHorarioSalida()}"));
+            panel.add(new JLabel(STR."Estado de vuelo: \{vuelo.getEstadoDeVuelo()}"));
+            panel.add(new JLabel(STR."Tipo de vuelo: \{vuelo.getTipoVuelo()}"));
             //         panel.add(new JLabel("Asientos Económicos disponibles: " + vuelo.getAsientosEconomicos()));
             //      panel.add(new JLabel("Asientos de Negocios disponibles: " + vuelo.getAsientosNegocios()));
             //   panel.add(new JLabel("Asientos de Primera disponibles: " + vuelo.getAsientosPrimera()));
@@ -341,7 +337,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
     public void imprimirEliminarVuelo(Vuelo vuelo) {
         //Cartelito de eliminar vuelo con swing
         SwingUtilities.invokeLater(() -> {
-            String message = "El vuelo " + vuelo.getId() + " con destino a " + vuelo.getDestino() + " ha sido eliminado \uD83D\uDE80"; // Emoji de cohete
+            String message = STR."El vuelo \{vuelo.getId()} con destino a \{vuelo.getDestino()} ha sido eliminado \uD83D\uDE80"; // Emoji de cohete
             JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
         });
     }

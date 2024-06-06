@@ -56,7 +56,7 @@ public class GestorCRUD<T> implements CRUD<T> {
             // Insertar el objeto con el nuevo ID en el TreeMap
             treeMap.put(nuevoId, objetoModificado);
         } else {
-            System.out.println("No se encontró ningún objeto con el ID " + idAntiguo);
+            System.out.println(STR."No se encontró ningún objeto con el ID \{idAntiguo}");
         }
     }
 
@@ -76,7 +76,7 @@ public class GestorCRUD<T> implements CRUD<T> {
         if (treeMap.isEmpty()) {
             System.out.println("El TreeMap está vacío.");
         } else {
-            treeMap.forEach((key, value) -> System.out.println(value));
+            treeMap.forEach((_, value) -> System.out.println(value));
             imprimirTreeMapEnSwing((TreeMap<String, T>) treeMap); //Llamada al metodo para imprimir un treeMap con Swing
         }
     }
@@ -98,7 +98,7 @@ public class GestorCRUD<T> implements CRUD<T> {
                     frameTitle = firstValue.getClass().getSimpleName();
                 }
             }
-            JFrame frame = new JFrame("LISTA DE "+frameTitle.toUpperCase()+"S");
+            JFrame frame = new JFrame(STR."LISTA DE \{frameTitle.toUpperCase()}S");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(600, 400);
 

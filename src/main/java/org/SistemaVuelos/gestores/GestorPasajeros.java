@@ -20,7 +20,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
      }
      */
     Scanner scanner = new Scanner(System.in);
-    GestorCRUD<Pasajero> gestorCRUD = new GestorCRUD<Pasajero>();
+    GestorCRUD<Pasajero> gestorCRUD = new GestorCRUD<>();
 
     public void agregarPasajero() throws PasajeroNoEncontradoException{//Agrega un pasajero
 
@@ -48,7 +48,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         String pasajeroABuscar = scanner.nextLine();
         for (Map.Entry<String, Pasajero> entry : gestorCRUD.getTreeMap().entrySet()) {
             // entry.getValue() es el objeto Pasajero leido del treeMap
-            Pasajero pasajero = entry.getValue();
+            Pasajero pasajero = entry.getValue(); //Se puede pasar entry.getValue() Para ahorrar una variable
             if (pasajero != null && pasajero.getNombreCompleto().equalsIgnoreCase(pasajeroABuscar)) {
                 //Si hay un pasajero y su nombre es igual al scanneado entonces lo muestro con system.out y Swing
                 System.out.println(entry.getValue());
@@ -56,7 +56,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             }
         }
         if (!encontrado) {
-            throw new PasajeroNoEncontradoException("No se encontraron pasajeros con nombres: " + pasajeroABuscar);
+            throw new PasajeroNoEncontradoException(STR."No se encontraron pasajeros con nombres: \{pasajeroABuscar}");
         }
     }
 
@@ -72,12 +72,12 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
                 System.out.println(pasajero); // Imprimir detalles del pasajero
                 imprimirPantallaDetallesPasajero(pasajero,"B"); //Muestreo con Swing
             } else {
-               throw  new PasajeroNoEncontradoException("No se encontró ningún pasajero con el pasaporte: " + pasaporte);
+               throw  new PasajeroNoEncontradoException(STR."No se encontró ningún pasajero con el pasaporte: \{pasaporte}");
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
         } catch (Exception e) {
-            System.out.println("Error en la búsqueda: " + e.getMessage());
+            System.out.println(STR."Error en la búsqueda: \{e.getMessage()}");
         }
         return pasajero;
     }
@@ -120,7 +120,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
 
     public void imprimirEliminarPasajero(Pasajero pasajero) { //Cartelito para cuando elimine
         SwingUtilities.invokeLater(() -> {
-            String message = "El pasajero "+pasajero.getNombreCompleto()+" ha sido eliminado \uD83D\uDE22"; // Emoji de carita triste
+            String message = STR."El pasajero \{pasajero.getNombreCompleto()} ha sido eliminado \uD83D\uDE22"; // Emoji de carita triste
             JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
         });
     }
@@ -146,8 +146,8 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
             label.setFont(new Font("Arial", Font.BOLD, 18));
             panel.add(label);
 
-            panel.add(new JLabel("ID: " + pasajero.getId()));
-            panel.add(new JLabel("Nombre completo: " + pasajero.getNombreCompleto()));
+            panel.add(new JLabel(STR."ID: \{pasajero.getId()}"));
+            panel.add(new JLabel(STR."Nombre completo: \{pasajero.getNombreCompleto()}"));
 
             frame.add(panel);
             frame.setLocationRelativeTo(null);

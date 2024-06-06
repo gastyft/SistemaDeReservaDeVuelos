@@ -1,7 +1,8 @@
 package org.SistemaVuelos.gestores;
 
-import org.SistemaVuelos.enums.Destinos;
+
 import org.SistemaVuelos.enums.TipoAsiento;
+import org.SistemaVuelos.enums.TipoDeVuelo;
 import org.SistemaVuelos.exceptions.AsientoNoDisponibleException;
 import org.SistemaVuelos.exceptions.PasajeroNoEncontradoException;
 import org.SistemaVuelos.exceptions.ReservaNoEncontradaException;
@@ -15,11 +16,11 @@ import java.awt.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
+
 
 public class GestorReservas { //GESTOR DE CARGA DE DATOS
 
-    GestorCRUD<Reserva> gestorCRUD = new GestorCRUD<Reserva>();
+    GestorCRUD<Reserva> gestorCRUD = new GestorCRUD<>();
     Scanner scanner = new Scanner(System.in);
     GestorVuelos gestorVuelos;
     GestorPasajeros gestorPasajeros;
@@ -46,7 +47,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             }
             if (tipoAsiento != null) {
                 cargo = true;
-                System.out.println("Has seleccionado el tipo de asiento: " + tipoAsiento.name());
+                System.out.println(STR."Has seleccionado el tipo de asiento: \{tipoAsiento.name()}");
             } else {
                 System.out.println("El tipo de asiento ingresado no está en la lista de tipo de asientos disponibles.");
             }
@@ -105,9 +106,9 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             // Validar asientos disponibles
             if (vuelo.isDisponible()) { //Si el vuelo tiene asientos de alguna clase disponible muestra
                 //cuales tienen asientos libres y cuales tienen 0
-                System.out.println("\n\nHay Asientos Economicos " + vuelo.getCantAsientosE());
-                System.out.println("Hay Asientos Negocios " + vuelo.getCantAsientosNeg());
-                System.out.println("Hay Asientos Primera " + vuelo.getCantAsientosPri());
+                System.out.println(STR."\n\nHay Asientos Economicos \{vuelo.getCantAsientosE()}");
+                System.out.println(STR."Hay Asientos Negocios \{vuelo.getCantAsientosNeg()}");
+                System.out.println(STR."Hay Asientos Primera \{vuelo.getCantAsientosPri()}");
                 // Disminuir la disponibilidad del vuelo segun tipo de asiento
 
                 System.out.println("Elija que tipo de asiento quiere");
@@ -132,11 +133,11 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 throw new ReservaNoEncontradaException("No hay asientos disponibles en este vuelo");
             }
         } catch (VueloNoEncontradoException e) {
-            throw new VueloNoEncontradoException("Vuelo no encontrado: " + e.getMessage());
+            throw new VueloNoEncontradoException(STR."Vuelo no encontrado: \{e.getMessage()}");
         } catch (PasajeroNoEncontradoException e) {
-            throw new PasajeroNoEncontradoException("Pasajero no encontrado: " + e.getMessage());
+            throw new PasajeroNoEncontradoException(STR."Pasajero no encontrado: \{e.getMessage()}");
         } catch (Exception e) {
-            throw new ReservaNoEncontradaException("Error en agregar Reserva: " + e.getMessage());
+            throw new ReservaNoEncontradaException(STR."Error en agregar Reserva: \{e.getMessage()}");
         }
     }
 
@@ -148,7 +149,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
         }
     }
 
-    public List<Reserva> buscarReservasPorVuelo() throws VueloNoEncontradoException, ReservaNoEncontradaException {
+    public void buscarReservasPorVuelo() throws VueloNoEncontradoException, ReservaNoEncontradaException {
         //Busqueda de reservas por vuelo que devuelve una listas
         Vuelo vueloABuscar = gestorVuelos.buscarUnVuelo();
         if (vueloABuscar == null) {
@@ -169,10 +170,10 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             gestorCRUD.imprimirTreeMapEnSwing(reservaTreeMap);//Imprimo el treemap con swing llamandolo del gestorCRUD
         }
 
-        return reservasFiltradas; //Devuelvo lista
+   //     return reservasFiltradas; //Devuelvo lista
     }
 
-    public List<Reserva> buscarReservasPorPasajero() throws PasajeroNoEncontradoException, ReservaNoEncontradaException {
+    public void buscarReservasPorPasajero() throws PasajeroNoEncontradoException, ReservaNoEncontradaException {
         //Busqueda de reservas por pasajero
         Pasajero pasajeroABuscar = gestorPasajeros.buscarUnPasajeroID();//Llamada a buscar por id de gestor pasajeros
         if (pasajeroABuscar == null) { //Si es null lo que devuelve el metodo entonces lanza excepcion
@@ -192,7 +193,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             gestorCRUD.imprimirTreeMapEnSwing(reservaTreeMap); //Llamada a imprimir con Swing
         }
 
-        return reservasFiltradas;
+        // return reservasFiltradas;
     }
 
 
@@ -207,12 +208,12 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 System.out.println("Reserva encontrada");
                 System.out.println(reserva); // Imprimir detalles del pasajero
             } else {//Excepcion si es null
-                throw new ReservaNoEncontradaException("No se encontró ningún pasajero con el pasaporte: " + idABuscar);
+                throw new ReservaNoEncontradaException(STR."No se encontró ningún pasajero con el pasaporte: \{idABuscar}");
             }
         } catch (NullPointerException e) {
             System.out.println("El TreeMap no está inicializado o está vacío.");
         } catch (Exception e) {
-            System.out.println("Error en la búsqueda: " + e.getMessage());
+            System.out.println(STR."Error en la búsqueda: \{e.getMessage()}");
         }
         return reserva; //Se devuelve si se hallo
     }
@@ -220,7 +221,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
     public void modificarReserva() throws PasajeroNoEncontradoException, ReservaNoEncontradaException, VueloNoEncontradoException, AsientoNoDisponibleException {
         //Modificar una reserva
         System.out.println("Modificar una reserva");
-        TipoAsiento tipoAsiento = null;
+        TipoAsiento tipoAsiento;
         try {
             Reserva reserva = buscarUnaReservaPorID();//Busqueda de reserva por ID
             if (reserva == null) //Si es null lanza excepcion
@@ -235,9 +236,9 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                 throw new VueloNoEncontradoException("No se encontro el vuelo buscado para modificar");
 
             if (vuelo.isDisponible()) { //Se muestran los asientos disponibles si se quiere cambiar el tipo de asiento
-                System.out.println("\n\nHay Asientos Economicos " + vuelo.getCantAsientosE());
-                System.out.println("Hay Asientos Negocios " + vuelo.getCantAsientosNeg());
-                System.out.println("Hay Asientos Primera " + vuelo.getCantAsientosPri());
+                System.out.println(STR."\n\nHay Asientos Economicos \{vuelo.getCantAsientosE()}");
+                System.out.println(STR."Hay Asientos Negocios \{vuelo.getCantAsientosNeg()}");
+                System.out.println(STR."Hay Asientos Primera \{vuelo.getCantAsientosPri()}");
                 // Por como lo ejecuto Sumo uno a la disponibilidad del asiento segun tipo de asiento
                 //Porque abajo vuelvo a pedir un nuevo asiento y vuelvo a restar la disponibilidad
                 //Entonces asi asi recupero el asiento por mas que elija el mismo
@@ -274,7 +275,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
             reserva.setPasajeroReserva(pasajero); //Seteo cambios anteriores
             reserva.setVueloReserva(vuelo); //Seteo cambios anteriores
             reserva.setTipoAsientoPasajero(tipoAsiento); //Seteo cambios anteriores
-            System.out.println("Reserva modificada\n" + reserva); //Muestreo por consola
+            System.out.println(STR."Reserva modificada\n\{reserva}"); //Muestreo por consola
             imprimirPantallaDetallesReserva(reserva, "1"); //muestreo por Swing
         } catch (Exception e) {
             System.out.println("Error al modificar una reserva");
@@ -331,7 +332,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                                     //Se resta la disponibilidad de ese nuevo asiento o si habia
                                     //lugar en el asiento original entonces
                                     tipoAsientoDisponible(nuevoTipoAsiento, reserva.getVueloReserva());
-                                    System.out.println("Se ha asignado un nuevo tipo de asiento: " + nuevoTipoAsiento);
+                                    System.out.println(STR."Se ha asignado un nuevo tipo de asiento: \{nuevoTipoAsiento}");
                                     reserva.setTipoAsientoPasajero(nuevoTipoAsiento);
                                 } catch (AsientoNoDisponibleException ex) {
 
@@ -348,7 +349,9 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
                     }
                 } else
                     throw new AsientoNoDisponibleException("No hay asientos disponibles");
-            }else throw new ReservaNoEncontradaException("La reserva ya se encuentra activa");
+            }else {
+                throw new ReservaNoEncontradaException("La reserva ya se encuentra activa");
+            }
                 reserva.setActivo(true); //Si se pudo cargar el asiento bien se setea la reserva a activa nuevamente
             imprimirActivarReservaCancelada(reserva);//Se imprime actualizacion con Swing
         } catch (Exception e) {
@@ -405,23 +408,23 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
 
             // Mostrar nombre del pasajero
             Pasajero pasajero = reserva.getPasajeroReserva();
-            panel.add(new JLabel("Pasajero: " + pasajero.getNombreCompleto()));
+            panel.add(new JLabel(STR."Pasajero: \{pasajero.getNombreCompleto()}"));
 
             // Mostrar ID o destino del vuelo
             Vuelo vuelo = reserva.getVueloReserva();
-            String infoVuelo = "Destino: ";
-            if (vuelo.getTipoVuelo().equals("Nacional")) {
+          String infoVuelo = "Destino: ";
+            if (vuelo.getTipoVuelo().equals(TipoDeVuelo.NACIONAL)){
                 infoVuelo += vuelo.getId();
             } else {
                 infoVuelo += vuelo.getDestino();
             }
             panel.add(new JLabel(infoVuelo));
 
-            panel.add(new JLabel("Horario de salida: " + vuelo.getHorarioSalida()));
-            panel.add(new JLabel("Estado del vuelo: " + vuelo.getEstadoDeVuelo()));
-            panel.add(new JLabel("Tipo de vuelo: " + vuelo.getTipoVuelo()));
-            panel.add(new JLabel("Tipo de asiento: " + reserva.getTipoAsientoPasajero()));
-            panel.add(new JLabel("Estado de la reserva: " + (reserva.isActivo() ? "Activa" : "Dada de baja")));
+            panel.add(new JLabel(STR."Horario de salida: \{vuelo.getHorarioSalida()}"));
+            panel.add(new JLabel(STR."Estado del vuelo: \{vuelo.getEstadoDeVuelo()}"));
+            panel.add(new JLabel(STR."Tipo de vuelo: \{vuelo.getTipoVuelo()}"));
+            panel.add(new JLabel(STR."Tipo de asiento: \{reserva.getTipoAsientoPasajero()}"));
+            panel.add(new JLabel(STR."Estado de la reserva: \{reserva.isActivo() ? "Activa" : "Dada de baja"}"));
             // Ternario para ver si la reserva esta activa o cancelada
             frame.add(panel);
             frame.setLocationRelativeTo(null);
@@ -432,7 +435,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
     public void imprimirEliminarReserva(Reserva reserva) {
         //Cartelito de eliminacion
         SwingUtilities.invokeLater(() -> {
-            String message = "La reserva " + reserva.getId() + " ha sido eliminada \u2705"; // Emoji de marca de verificación
+            String message = STR."La reserva \{reserva.getId()} ha sido eliminada ✅"; // Emoji de marca de verificación
             JOptionPane.showMessageDialog(null, message, "Eliminado", JOptionPane.INFORMATION_MESSAGE);
         });
     }
@@ -440,7 +443,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
     public void imprimirCancelarReserva(Reserva reserva) {
         //Cartelito de eliminacion
         SwingUtilities.invokeLater(() -> {
-            String message = "La reserva " + reserva.getId() + " ha sido cancelada \uD83D\uDEAB"; // Emoji de prohibición
+            String message = STR."La reserva \{reserva.getId()} ha sido cancelada \uD83D\uDEAB"; // Emoji de prohibición
             JOptionPane.showMessageDialog(null, message, "Cancelada", JOptionPane.INFORMATION_MESSAGE);
         });
     }
@@ -448,7 +451,7 @@ public class GestorReservas { //GESTOR DE CARGA DE DATOS
     public void imprimirActivarReservaCancelada(Reserva reserva) {
         //Cartelito de reactivacion de reserva
         SwingUtilities.invokeLater(() -> {
-            String message = "La reserva " + reserva.getId() + " ha sido reactivada \uD83D\uDCAF"; // Emoji de 100 puntos
+            String message = STR."La reserva \{reserva.getId()} ha sido reactivada \uD83D\uDCAF"; // Emoji de 100 puntos
             JOptionPane.showMessageDialog(null, message, "Reactivada", JOptionPane.INFORMATION_MESSAGE);
         });
     }

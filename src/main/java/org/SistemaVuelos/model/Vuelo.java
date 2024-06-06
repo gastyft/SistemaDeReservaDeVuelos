@@ -15,6 +15,9 @@ public class Vuelo {
     private Estado estadoDeVuelo;
     private TipoDeVuelo tipoVuelo;
     private String caracterParaId;
+
+    //Para las cantidades de asientos por vuelos deberia ser un tipo de avion unico
+    //pero deberia variar segun Tipo de avion donde  tiene su propia capacidad (Seria un nuevo enum)
     private int cantAsientosE= 2; //60
     private int cantAsientosNeg = 1; //30
     private int cantAsientosPri= 1; //20
@@ -30,9 +33,7 @@ public class Vuelo {
     this.disponible=true;
     }
 
-    public String getCaracterParaId() {
-        return caracterParaId;
-    }
+
 
     public void setId(String id) {
         this.id = id;
@@ -135,9 +136,4 @@ public class Vuelo {
                 "\nCantidad asientos Primera disponibles "+cantAsientosPri;
     }
 
-    public void disponibilidad(){
-        if(cantAsientosE==0 && cantAsientosNeg==0 && cantAsientosPri==0)
-            this.disponible= false;
-
-    }
 }

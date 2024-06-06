@@ -1,11 +1,10 @@
 package org.SistemaVuelos.menus;
 
-import org.SistemaVuelos.exceptions.VueloNoEncontradoException;
+
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +29,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
                       ESCRIBA "ESC" PARA SALIR DEL PROGRAMA
                       """;
 
-              String opc = "Esc";
+              String opc;
               do {
                   System.out.println(menu);
                   opc = scanner.nextLine().toUpperCase();
@@ -60,19 +59,9 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
             JButton whatsappButton = new JButton("WhatsApp");
             JButton portfolioButton = new JButton("Portfolio");
 
-            whatsappButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    abrirEnlaceEnNavegador("https://wa.me/2235034695");
-                }
-            });
+            whatsappButton.addActionListener(_ -> abrirEnlaceEnNavegador("https://wa.me/2235034695"));
 
-            portfolioButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    abrirEnlaceEnNavegador("https://portfolio-yo-programo.web.app/principal");
-                }
-            });
+            portfolioButton.addActionListener(_ -> abrirEnlaceEnNavegador("https://portfolio-yo-programo.web.app/principal"));
 
             panel.add(label);
             panel.add(whatsappButton);
@@ -89,7 +78,7 @@ public class MenuPrincipal { //todo Llamadas a los sub menus
                 Desktop desktop = Desktop.getDesktop();
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException e) {
-                System.out.println("No se pudo abrir el enlace en el navegador: " + e.getMessage());
+                System.out.println(STR."No se pudo abrir el enlace en el navegador: \{e.getMessage()}");
             }
         } else {
             System.out.println("La función para abrir el navegador no es compatible en este sistema.");
