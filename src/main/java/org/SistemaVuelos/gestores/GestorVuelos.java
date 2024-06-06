@@ -58,10 +58,10 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
                 horarioSalida = LocalDateTime.of(anio, mes, dia, hora, min);
 
                 // Verificar si la fecha es igual o mayor que la fecha actual
-                if (!horarioSalida.toLocalDate().isBefore(LocalDate.now())) {
+                if (!horarioSalida.toLocalDate().isBefore(LocalDate.now()) && !horarioSalida.isAfter(LocalDate.of(2050,12,31).atStartOfDay())) {
                     fechaValida = true;
                 } else {
-                    System.out.println("La fecha ingresada debe ser igual o mayor que la fecha de hoy.");
+                    System.out.println("La fecha ingresada debe ser igual o mayor que la fecha de hoy y menor al anio 2050");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada no válida. Por favor, ingrese un número válido.");

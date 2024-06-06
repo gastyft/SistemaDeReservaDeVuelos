@@ -101,7 +101,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
                 System.out.println("Error: El nombre completo solo puede contener letras y espacios.");
               throw new PasajeroNoEncontradoException("El nombre solo puede contener letras y espacios");// Terminar el método si la entrada no es válida
             }
-            pasajeroAModificar.setNombreCompleto(scanner.nextLine()); //Seteo nombre y lo devuelvo modificado
+            pasajeroAModificar.setNombreCompleto(nombreCompleto); //Seteo nombre y lo devuelvo modificado
             return pasajeroAModificar;
         } catch (Exception e) {
             throw new PasajeroNoEncontradoException("No se pudo modificar.");
@@ -113,7 +113,7 @@ public class GestorPasajeros { //GESTOR DE CARGA DE DATOS
         Pasajero pasajeroAEliminar = buscarUnPasajeroID(); //LLamo metodo buscar por ID
         if (pasajeroAEliminar != null) { //Si el metodo anterior lo encuentra entonces entra al if
             gestorCRUD.eliminar(pasajeroAEliminar, pasajeroAEliminar.getId()); // Su funcion muestra si se borro o no exitosamente
-          //LLamo a eliminar del gestorCRUD
+          //LLamo a eliminar del gestorCRUD. Muestro en el menu Pasajeros
             return pasajeroAEliminar;
         } else throw  new PasajeroNoEncontradoException("No se pudo eliminar el objeto");
     }
