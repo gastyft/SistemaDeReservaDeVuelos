@@ -286,6 +286,7 @@ public class GestorVuelos { //GESTOR DE CARGA DE DATOS PARA VUELOS
             }
             String nuevoId = tipoID + numeroUnico; //Se concatena La letra con el numero de vuelo obtenido
             vuelo.setId(nuevoId); //Si se elije vuelo internacional cambia el prefijo o viceversa
+            vuelo.setCaracterParaId(tipoID);
             vuelo.setDestino(destino);
             vuelo.setTipoVuelo(destino.getTipo());
             System.out.println("Cambiar estado");

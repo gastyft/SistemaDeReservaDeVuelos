@@ -64,7 +64,9 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                     try { //Busqueda de una reserva por ID e imprime con Swing
                         gestorReservas.mostrarReservas();
                         Reserva reserva = gestorReservas.buscarUnaReservaPorID();
+                        if(reserva !=null)
                         gestorReservas.imprimirPantallaDetallesReserva(reserva,"B");
+
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Reserva no encontrado");
                     }
@@ -90,6 +92,7 @@ public class MenuReservas { //Todo Llamadas a las funciones de carga
                 case "7" -> {
                     try { //Elimina una reserva e imprime cartelito de eliminacion
                         Reserva reserva = gestorReservas.eliminar();
+                        if(reserva!=null)
                         gestorReservas.imprimirEliminarReserva(reserva);
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Reserva no encontrada. No se pudo eliminar");

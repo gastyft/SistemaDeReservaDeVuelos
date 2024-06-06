@@ -55,6 +55,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 gestorVuelos.mostrarVuelos();
                 try {
                     Vuelo vuelo= gestorVuelos.buscarUnVuelo();
+                    if(vuelo!= null)
                     gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"B");
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
@@ -64,6 +65,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                 try { //Muestreo de vuelos y modificacion
                     gestorVuelos.mostrarVuelos();
                    Vuelo vuelo =  gestorVuelos.modificar();
+                   if(vuelo!=null)
                     gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
                 }catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
@@ -72,6 +74,7 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
             case "6" -> {
                 try { // Elimina un vuelo validando que no hay reservas para ese vuelo e imprime con swing
                    Vuelo vuelo= gestorVuelos.eliminar(gestorReservas);
+                    if(vuelo!=null)
                     gestorVuelos.imprimirEliminarVuelo(vuelo);
                 } catch (VueloNoEncontradoException e) {
                     System.out.println(e.getMessage());
@@ -82,9 +85,9 @@ public class MenuVuelos { //Todo llamadas a las funciones de carga
                   Vuelo vuelo = gestorVuelos.buscarUnVuelo();
                   if(vuelo ==null) throw new VueloNoEncontradoException("");
                Estado estado = gestorVuelos.cambiarEstado();
-               gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
                if(vuelo != null && estado!= null){
                    vuelo.setEstadoDeVuelo(estado);
+                   gestorVuelos.imprimirPantallaDetallesVuelo(vuelo,"1");
                }
               }catch (VueloNoEncontradoException e){
                   System.out.println(e.getMessage());

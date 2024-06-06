@@ -48,6 +48,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 case "4" -> { //Busca un pasajero por id e imprime con Swing
                     try {
                        Pasajero pasajero= gestorPasajeros.buscarUnPasajeroID();
+                       if(pasajero!=null)
                         gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"B");
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");
@@ -57,6 +58,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 case "5" -> { //Modifica un pasajero e imprime con Swing
                     try {
                     Pasajero pasajero =   gestorPasajeros.modificar();
+                    if(pasajero!=null)
                         gestorPasajeros.imprimirPantallaDetallesPasajero(pasajero,"1");
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");
@@ -66,6 +68,7 @@ public class MenuPasajeros { //Todo llamadas a las funciones de carga
                 case "6" -> { //Elimina un pasajero e imprime con Swing
                     try {
                        Pasajero pasajero = gestorPasajeros.eliminar();
+                       if(pasajero!=null)
                         gestorPasajeros.imprimirEliminarPasajero(pasajero);
                     } catch (PasajeroNoEncontradoException e) {
                         System.out.println("Pasajero no encontrado");

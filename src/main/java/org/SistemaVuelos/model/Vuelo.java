@@ -15,9 +15,9 @@ public class Vuelo {
     private Estado estadoDeVuelo;
     private TipoDeVuelo tipoVuelo;
     private String caracterParaId;
-    private int cantAsientosE= 60;
-    private int cantAsientosNeg = 30;
-    private int cantAsientosPri= 20;
+    private int cantAsientosE= 2; //60
+    private int cantAsientosNeg = 1; //30
+    private int cantAsientosPri= 1; //20
     private boolean disponible;
 
     public Vuelo(Destinos destino, LocalDateTime horarioSalida, Estado estadoDeVuelo, TipoDeVuelo tipoVuelo, String id) {
